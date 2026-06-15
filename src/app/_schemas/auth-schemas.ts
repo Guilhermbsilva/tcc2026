@@ -12,9 +12,18 @@ export const signUpFormSchema = z.object({
 
     confirmPassword: z.string(),
 
+
 }).refine(data => data.password === data.confirmPassword,{
     message: "As senhas são diferentes",
     path: ["confirmPassword"]
 });
 
 export type SignUpFormSchema = z.infer<typeof signUpFormSchema>;
+
+export const cultoSchema = z.object({
+
+    dia: z.string().min(1, {message: "escolha uma data"}),
+
+})
+
+export type cultoSchema = z.infer<typeof cultoSchema>;

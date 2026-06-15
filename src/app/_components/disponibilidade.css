@@ -1,0 +1,158 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    overflow: hidden;
+}
+
+header{
+    display: flex;
+    background: linear-gradient(to left, rgb(97, 97, 97), rgb(71, 71, 71));
+    height: 100px;
+    justify-content: space-between;
+    filter: drop-shadow(-8px -8px 10px rgb(255, 254, 254));
+    align-items: center;
+    padding: 0 50px;
+}
+
+.titulo2{
+    color: rgb(0, 0, 0);
+    margin: 0;
+}
+
+.lista{
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    align-items: center;
+    gap: 50px;
+}
+
+.quem-somos, .title-cadastrar{
+    color: #000000;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.backgroundcontainer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.backgroundcontainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background: url('/IMG_7461.JPG') no-repeat center center;
+  opacity: 0.7;
+  z-index: -2;
+}
+
+.backgroundcontainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+.content {
+  position: relative; 
+}
+
+.forms{
+  background-color: #fff;
+  color: #000000;
+  width: 850px;
+  height: 400px;
+  border-radius: 20px;
+  filter: drop-shadow(1px 1px 5px #888);
+  display: flex;
+    flex-direction: column;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+}
+
+form{
+    display: flex;
+    margin: 0 auto;
+    align-items: center;
+    flex-direction: column;
+}
+
+img{
+    height: 45px;
+    width: 45px;
+    margin: 50px 30px 10px 50px;
+}
+
+label{
+    margin: 10px 10px 10px 10px;
+}
+
+input{
+    margin: 10px 10px 10px 10px;
+}
+
+.titulo{
+    margin: 0 auto;
+    font-size: 30px;
+}
+
+.normal{
+    margin: 10px 10px 0px 50px;
+}
+
+input{
+    text-align: center;
+    border-radius: 20px;
+    height: 50px;
+    width: 300px;
+}
+
+.esqueceu{
+    margin: 0px 0px 0px 10px;
+    font-size: 12px;
+    text-decoration: none;
+    color: #000000;
+}
+
+.navegate{
+    margin: 0 auto;
+    width: 100px;
+    border-radius: 20px;
+    padding: 10px 10px;
+}
+
+.navegate:hover{
+    background-color: #ccc;
+    transition: 0.3s;
+}
+
+.cultos-criados{
+    margin: 0 auto;
+}
+
+.lista-c{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0px 0px 0px;
+}
+
+.culto-cad{
+    margin: 50px 0px 0px 0px;
+}
