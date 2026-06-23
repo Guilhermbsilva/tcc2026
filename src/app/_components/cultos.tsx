@@ -7,7 +7,7 @@ import { cultoSchema, signUpFormSchema, SignUpFormSchema } from "../_schemas/aut
 import { zodResolver } from "@hookform/resolvers/zod";
 import NazaLogo from "@/components/pas-nazareno.png"
 import { supabase } from "@/lib/supabase";
-import "./disponibilidade.css"
+import "./cultos.css"
 import { useEffect, useState } from "react";
 
 type FormData = {
@@ -21,7 +21,7 @@ type Culto = {
 
 
 
-export default function disponibilidade() {
+export default function cultos() {
 
     const [cultos, setCultos] = useState<Culto[]>([]);
 

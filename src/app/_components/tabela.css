@@ -1,0 +1,138 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    overflow: hidden;
+}
+
+
+
+header{
+    display: flex;
+    background: linear-gradient(to left, rgb(97, 97, 97), rgb(71, 71, 71));
+    height: 100px;
+    justify-content: space-between;
+    filter: drop-shadow(-8px -8px 10px rgb(255, 254, 254));
+    align-items: center;
+    padding: 0 50px;
+}
+
+
+.titulo2{
+    color: rgb(0, 0, 0);
+    margin: 0;
+}
+
+.lista{
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    align-items: center;
+    gap: 50px;
+}
+
+.quem-somos, .title-cadastrar{
+    color: #000000;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.backgroundcontainer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.backgroundcontainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/IMG_7461.JPG') no-repeat center center;
+  background-size: cover;
+  opacity: 0.7;
+  z-index: -2;
+}
+
+.backgroundcontainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+.content {
+  position: relative; 
+}
+
+h1{
+    position: absolute;
+}
+
+.escala {
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+.escala th,
+.escala td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+  min-width: 100px;
+}
+
+.ministro { 
+    background: #f4a261; 
+}
+
+.back1 { 
+    background: #f28482;
+}
+
+.back2 {
+     background: #e76bf3; 
+}
+
+.violao {
+     background: #9b5de5; 
+     color: white; 
+}
+
+.guitarra {
+    background: #5c7cfa; 
+    color: white; 
+}
+
+.baixo { 
+    background: #ffe066; 
+}
+
+.teclado { background: #2b9348; 
+    color: white; 
+}
+
+.som { 
+    background: #90dbf4; 
+}
+
+
+.escala thead th {
+  background: #eee;
+  font-weight: bold;
+}
+
+.escala{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
