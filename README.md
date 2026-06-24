@@ -281,3 +281,8 @@ Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) aplicando concei
 # 👨‍💻 Equipe
 
 Projeto desenvolvido pela equipe do TCC 2026.
+Davi Tavares
+Guilherme Martins
+Guilherme Barroso
+Vitor Costa
+Matheus Forim
