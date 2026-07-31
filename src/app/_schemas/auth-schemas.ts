@@ -27,3 +27,10 @@ export const cultoSchema = z.object({
 })
 
 export type cultoSchema = z.infer<typeof cultoSchema>;
+
+export const signInSchema = z.object({
+  email: z.string().email("Email inválido"),
+  password: z.string().min(1, "Senha obrigatória"),
+});
+
+export type SignInSchema = z.infer<typeof signInSchema>;
