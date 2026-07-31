@@ -1,9 +1,10 @@
-import Image from "next/image";
-import SignUpHookForm from "../_components/sign-up-hook-form";
-import Cultos from "../_components/cultos"
-import Tabela from "../_components/tabela"
-import Login from "../_components/login"
+import Cultos from "../_components/cultos";
+import AdminGuard from "../_components/admin";
 
-export default function Home() {
-  return <Cultos/>; 
+export default function Page() {
+  return (
+    <AdminGuard>
+      <Cultos />
+    </AdminGuard>
+  );
 }

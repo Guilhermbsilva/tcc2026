@@ -15,13 +15,14 @@ type FormData = {
 }
 
 type Culto = {
-    id: number;
+  id: number;
   dia: string;
+  descricao: string | null;
 };
 
 
 
-export default function cultos() {
+export default function Cultos() {
 
     const [cultos, setCultos] = useState<Culto[]>([]);
 
@@ -55,6 +56,7 @@ async function onSubmit(data: cultoSchema) {
     .insert([
       {
         dia: data.dia,
+        descricao: data.descricao || null,
       },
     ]);
 
@@ -87,8 +89,13 @@ return(
 
                 <div>
                     <input type="date" {...register("dia")} />
-
+                    {errors?.dia && <span>{errors.dia.message}</span>}
                 </div>
+
+                <div>
+                    <input type="text" placeholder="Descrição (opcional)" {...register("descricao")} />
+                    {errors?.descricao && <span>{errors.descricao.message}</span>}
+               </div>
 
                 <button>Criar</button>
 
@@ -104,6 +111,7 @@ return(
         {cultos.map((culto) => (
             <li key={culto.id} className="lista-culto">
             {new Date(culto.dia).toLocaleDateString("pt-BR")}
+            {culto.descricao && `- ${culto.descricao}`}
         </li>
       ))}
     </ul>

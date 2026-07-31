@@ -23,7 +23,7 @@ export type SignUpFormSchema = z.infer<typeof signUpFormSchema>;
 export const cultoSchema = z.object({
 
     dia: z.string().min(1, {message: "escolha uma data"}),
-
+    descricao: z.string().max(255).optional(),
 })
 
 export type cultoSchema = z.infer<typeof cultoSchema>;
