@@ -1,10 +1,10 @@
-import Cultos from "../_components/cultos";
+import Atribuirministerio from "../_components/atribuir-ministerio";
 import AuthGuard from "../_components/admin";
 
 export default function Page() {
   return (
     <AuthGuard adminOnly>
-      <Cultos />
+      <Atribuirministerio />
     </AuthGuard>
   );
 }

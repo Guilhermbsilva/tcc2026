@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-export default function AdminGuard({ children }: { children: React.ReactNode }) {
+type AuthGuardProps = {
+  children: React.ReactNode;
+  adminOnly?: boolean;
+};
+
+export default function AuthGuard({ children, adminOnly = false }: AuthGuardProps) {
   const router = useRouter();
   const [autorizado, setAutorizado] = useState(false);
   const [carregando, setCarregando] = useState(true);
@@ -18,15 +23,17 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
         return;
       }
 
-      const { data: usuario, error } = await supabase
-        .from("usuario")
-        .select("cargo")
-        .eq("email", user.email)
-        .single();
+      if (adminOnly) {
+        const { data: usuario, error } = await supabase
+          .from("usuario")
+          .select("cargo")
+          .eq("email", user.email)
+          .single();
 
-      if (error || usuario?.cargo !== "admin") {
-        router.push("/"); // depois pode trocar por uma página de "acesso negado"
-        return;
+        if (error || usuario?.cargo !== "admin") {
+          router.push("/"); // depois pode trocar por uma página de "acesso negado"
+          return;
+        }
       }
 
       setAutorizado(true);
@@ -34,7 +41,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     }
 
     verificar();
-  }, [router]);
+  }, [router, adminOnly]);
 
   if (carregando) return <p>Carregando...</p>;
   if (!autorizado) return null;

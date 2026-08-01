@@ -34,3 +34,31 @@ export const signInSchema = z.object({
 });
 
 export type SignInSchema = z.infer<typeof signInSchema>;
+
+export const vincularMinisterioSchema = z.object({
+  usuario_id: z.string().min(1, { message: "selecione um usuário" }),
+  ministerio_id: z.string().min(1, { message: "selecione um ministério" }),
+  funcao: z.string().min(1, { message: "informe a função" }).max(255),
+});
+
+export type VincularMinisterioSchema = z.infer<typeof vincularMinisterioSchema>;
+
+export const gerarEscalaSchema = z.object({
+  culto_id: z.string().min(1, { message: "selecione um culto" }),
+  ministerio_id: z.string().min(1, { message: "selecione um ministério" }),
+});
+
+export type GerarEscalaSchema = z.infer<typeof gerarEscalaSchema>;
+
+export const modeloCultoSchema = z.object({
+  nome: z.string().min(1, { message: "informe o nome do template" }).max(255),
+});
+
+export type ModeloCultoSchema = z.infer<typeof modeloCultoSchema>;
+
+export const funcaoTemplateSchema = z.object({
+  funcao: z.string().min(1, { message: "informe a função" }).max(255),
+  quantidade: z.number().min(1, { message: "mínimo 1" }), // sem coerce
+});
+
+export type FuncaoTemplateSchema = z.infer<typeof funcaoTemplateSchema>;
