@@ -22,7 +22,7 @@ export default function SignUpHookForm() {
     });
 
 async function onSubmit(data: SignUpFormSchema) {
- /*  const { data: authData, error: authError } = await supabase.auth.signUp({
+  const { data: authData, error: authError } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
   });
@@ -30,7 +30,7 @@ async function onSubmit(data: SignUpFormSchema) {
   if (authError) {
     console.error(authError);
     return;
-  } */
+  }
 
   const { error: insertError } = await supabase
     .from("usuario")
@@ -38,7 +38,8 @@ async function onSubmit(data: SignUpFormSchema) {
       {
         nome: data.name,
         email: data.email,
-        cargo: data.cargo,
+        cargo: "usuario",
+        funcao_solicitada: data.funcaoSolicitada,
       },
     ]);
 
@@ -95,11 +96,11 @@ async function onSubmit(data: SignUpFormSchema) {
             </div>
 
             <div>
-            <Input placeholder="cargo" {...register("cargo")}/>
+            <Input placeholder="Sua função (ex: guitarrista, cantor)" type="text" {...register("funcaoSolicitada")} />
         
-                    {errors?.cargo && (
+                    {errors?.funcaoSolicitada && (
                 <div className="text-red-500 text-xs">
-                    {errors?.cargo?.message}
+                    {errors?.funcaoSolicitada?.message}
                 </div>
                     )}
         

@@ -46,7 +46,7 @@ async function onSubmit(data: SignInSchema ) {
       return;
     }
 
-    router.push("tabela");
+    router.push("disponibilidade");
 }
 
     return(

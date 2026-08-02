@@ -159,7 +159,7 @@ export default function Disponibilidade() {
                           checked={selecionados.has(chave)}
                           onChange={() => alternar(culto.id, ministerio.id)}
                         />
-                        {new Date(culto.dia).toLocaleDateString("pt-BR")}
+                        {new Date(culto.dia + "T00:00:00").toLocaleDateString("pt-BR")}
                         {culto.descricao && ` — ${culto.descricao}`}
                       </label>
                     </li>

@@ -110,7 +110,7 @@ return(
         <ul className="lista-c">
         {cultos.map((culto) => (
             <li key={culto.id} className="lista-culto">
-            {new Date(culto.dia).toLocaleDateString("pt-BR")}
+            {new Date(culto.dia + "T00:00:00").toLocaleDateString("pt-BR")}
             {culto.descricao && `- ${culto.descricao}`}
         </li>
       ))}

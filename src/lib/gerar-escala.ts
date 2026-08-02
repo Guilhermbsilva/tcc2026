@@ -12,7 +12,7 @@ export async function gerarEscala(cultoId: string, ministerioId: string, criadoP
 
   if (!culto) throw new Error("Culto não encontrado");
 
-  const diaSemanaAtual = new Date(culto.dia).getDay();
+  const diaSemanaAtual = new Date(culto.dia + "T00:00:00").getDay();
 
   // 2. vagas necessárias
   const { data: vagas } = await supabase
@@ -52,8 +52,7 @@ export async function gerarEscala(cultoId: string, ministerioId: string, criadoP
     .limit(30);
 
   const cultoAnteriorMesmoDia = (cultosAnteriores ?? []).find(
-    (c) => new Date(c.dia).getDay() === diaSemanaAtual
-  );
+  (c) => new Date(c.dia + "T00:00:00").getDay() === diaSemanaAtual);
 
   let escaladosNoAnterior = new Set<string>();
 

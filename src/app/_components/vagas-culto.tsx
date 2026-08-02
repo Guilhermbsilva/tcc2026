@@ -104,7 +104,7 @@ export default function VagasCulto() {
         <option value="">Selecione o culto</option>
         {cultos.map((c) => (
           <option key={c.id} value={c.id}>
-            {new Date(c.dia).toLocaleDateString("pt-BR")}
+            {new Date(c.dia + "T00:00:00").toLocaleDateString("pt-BR")}
             {c.descricao && ` — ${c.descricao}`}
           </option>
         ))}
