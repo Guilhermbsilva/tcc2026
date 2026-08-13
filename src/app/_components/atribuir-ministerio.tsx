@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { vincularMinisterioSchema, VincularMinisterioSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
+import "./geral.css";
 
 type Usuario = { id: string; nome: string };
 type Ministerio = { id: string; ministerio: string };

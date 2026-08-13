@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { funcaoTemplateSchema, FuncaoTemplateSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
+import "./geral.css";
 
 type Culto = { id: string; dia: string; descricao: string | null };
 type Modelo = { id: string; nome: string };

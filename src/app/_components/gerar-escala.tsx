@@ -7,6 +7,7 @@ import { gerarEscalaSchema, GerarEscalaSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { gerarEscala } from "@/lib/gerar-escala";
+import "./geral.css";
 
 type Culto = { id: string; dia: string; descricao: string | null };
 type Ministerio = { id: string; ministerio: string };
