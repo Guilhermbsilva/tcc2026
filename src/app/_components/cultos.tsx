@@ -9,7 +9,8 @@ import NazaLogo from "@/components/pas-nazareno.png"
 import { supabase } from "@/lib/supabase";
 import "./cultos.css"
 import { useEffect, useState } from "react";
-
+import imagemFundo from "@/components/ui/IMG_6545.jpg"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 type FormData = {
     dia: string;
 }
@@ -76,13 +77,20 @@ useEffect(() => {
 
 
 return(
+  <>
+      <header>
+        <div className="logoministry"><img src={imagemMinistry.src}/></div>
+        <a href="/atribuir-ministerio">Atribuir</a>
+        <a href="/gerar-escala">Escala</a>
+        <a href="/ministerios">Ministério</a>
+        <a href="/modelos-cultos">Modelos</a>
+        <a href="/vagas-culto">Vagas</a>
+        <a href="/disponibilidade">Disponivel</a>
+        <a href="/tabela">Tabela</a>
+      </header>
 
-    <><div className="backgroundcontainer">
-
-        <div className="content"></div>
-
-    </div><div className="forms">
-
+   
+    <div className="forms">
 
             <p className="titulo">Criar Cultos</p>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -121,12 +129,7 @@ return(
        
 
         </div>
-
-
-        </>
-
+</>
 )}
-
-
 
 

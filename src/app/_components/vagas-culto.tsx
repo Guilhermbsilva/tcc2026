@@ -6,7 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { funcaoTemplateSchema, FuncaoTemplateSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import "./geral.css";
+import "./vagas-culto.css"
+import imagemFundo from "@/components/ui/IMG_6545.jpg"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 
 type Culto = { id: string; dia: string; descricao: string | null };
 type Modelo = { id: string; nome: string };
@@ -98,8 +100,21 @@ export default function VagasCulto() {
   }
 
   return (
+    <>
+    <div className="container">
+      <header>
+        <div className="logoministry"><img src={imagemMinistry.src}/></div>
+        <a href="/atribuir-ministerio">Atribuir</a>
+        <a href="/cultos">Cultos</a>
+        <a href="/gerar-escala">Escala</a>
+        <a href="/ministerios">Ministério</a>
+        <a href="/modelos-cultos">Modelos</a>
+        <a href="/disponibilidade">Disponivel</a>
+        <a href="/tabela">Tabela</a>
+      </header>
+
     <div className="forms">
-      <p className="titulo">Vagas por culto</p>
+      <p className="titulo">Vagas Disponiveis</p>
 
       <select value={cultoSelecionado} onChange={(e) => setCultoSelecionado(e.target.value)}>
         <option value="">Selecione o culto</option>
@@ -150,5 +165,7 @@ export default function VagasCulto() {
         </>
       )}
     </div>
+    </div>
+    </>
   );
 }

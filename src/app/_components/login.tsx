@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import {useForm} from "react-hook-form";
 import { SignInSchema, signUpFormSchema, SignUpFormSchema } from "../_schemas/auth-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import "./sign-up-form.css"
-import NazaLogo from "@/components/pas-nazareno.png"
 import { supabase } from "@/lib/supabase";
 import { signInSchema } from "../_schemas/auth-schemas"
 import { useRouter } from "next/navigation";
-
+import "./login.css"
+import imagemFundo from "@/components/ui/IMG_7461.png"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
+import Link from "next/link";
 type FormData = {
     nome: string;
     email: string;
@@ -51,38 +52,27 @@ async function onSubmit(data: SignInSchema ) {
 
     return(
 
-        <><header>
-
-            <h1 className="titulo2">MinistryHub</h1>
-
-            <li className="lista">
-                <a href="" className="quem-somos">Quem somos?</a>
-                <a href="" className="title-cadastrar">Cadastrar</a>
-            </li>
-
-        </header><div className='backgroundcontainer'>
-
-                <div className='content'></div>
-            </div>
-            
+        <> <div className="imagemfundo"><img src={imagemFundo.src}/></div>
+        
+        
             <div className="forms">
-
-
-                <img src={NazaLogo.src} alt="" />
-                <p className="titulo">Faça Login</p>
+                <div className="logoministry"><img src={imagemMinistry.src}/></div>
+             <div className="azul">
+                <p className="titulo">Login</p>
                 <p className="normal">Faça Login para acessar o sistema</p>
         <form onSubmit={handleSubmit(onSubmit)}>
         
-            <div>
-            <Input placeholder="email" type="email" {...register("email")}/>
+            
+                <h2>Email</h2>
+            <Input className="input" placeholder="you@example.com" type="email" {...register("email")}/>
         
                     {errors?.email && (
                 <div className="text-red-500 text-xs">
                     {errors?.email?.message}
                 </div>
                     )}
-
-            <Input placeholder="Senha" type="password" {...register("password")} />
+            <h2>Senha</h2>
+            <Input className="input" placeholder="••••••••" type="password" {...register("password")} />
         
                     {errors?.password && (
                 <div className="text-red-500 text-xs">
@@ -93,13 +83,16 @@ async function onSubmit(data: SignInSchema ) {
                 {loginError && (
                 <div className="text-red-500 text-xs">{loginError}</div>
                 )}
+        <Button>Logar</Button>
+            <div className="final">
+                <span>ou</span>
+                <h3>Novo no MinistryHub? <a href="/cadastro">Crie sua conta</a></h3>
+                </div>
         
-            </div>
+            </form>
+        </div>  
+    </div>
         
-                <Button>cadastrar</Button>
-        
-        </form>
-        </div>
         </>
         
     )

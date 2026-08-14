@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import "./geral.css";
 
 type AuthGuardProps = {
   children: React.ReactNode;

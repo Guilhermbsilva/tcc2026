@@ -6,8 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ministerioSchema, MinisterioSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import "./geral.css";
-
+import "./ministerios.css"
+import imagemFundo from "@/components/ui/IMG_6545.jpg"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 type Ministerio = {
   id: string;
   ministerio: string;
@@ -70,10 +71,23 @@ export default function Ministerios() {
   }
 
   return (
+    <>
+    <header>
+            <div className="logoministry"><img src={imagemMinistry.src}/></div>
+            <a href="/atribuir-ministerio">Atribuir</a>
+            <a href="/cultos">Cultos</a>
+            <a href="/gerar-escala">Escala</a>
+            <a href="/modelos-cultos">Modelos</a>
+            <a href="/vagas-culto">Vagas</a>
+            <a href="/disponibilidade">Disponivel</a>
+            <a href="tabela">Tabela</a>
+          </header>
+    
     <div className="forms">
       <p className="titulo">Criar Ministérios</p>
-
+   
       <form onSubmit={handleSubmit(onSubmit)}>
+         <div className="pai">
         <div>
           <input type="text" placeholder="Nome do ministério (ex: música)" {...register("ministerio")} />
           {errors?.ministerio && <span>{errors.ministerio.message}</span>}
@@ -83,7 +97,7 @@ export default function Ministerios() {
           <input type="text" placeholder="Descrição (opcional)" {...register("descricao")} />
           {errors?.descricao && <span>{errors.descricao.message}</span>}
         </div>
-
+</div>
         <Button type="submit">Criar</Button>
       </form>
 
@@ -109,5 +123,6 @@ export default function Ministerios() {
         )}
       </div>
     </div>
+    </>
   );
 }

@@ -6,9 +6,9 @@ import {useForm} from "react-hook-form";
 import { signUpFormSchema, SignUpFormSchema } from "../_schemas/auth-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./sign-up-form.css"
-import NazaLogo from "@/components/pas-nazareno.png"
 import { supabase } from "@/lib/supabase";
-
+import imagemFundo from "@/components/ui/IMG_7461.png"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 type FormData = {
     nome: string;
     email: string;
@@ -51,29 +51,21 @@ async function onSubmit(data: SignUpFormSchema) {
 
     return(
 
-        <><header>
-
-            <h1 className="titulo2">MinistryHub</h1>
-
-            <li className="lista">
-                <a href="" className="quem-somos">Quem somos?</a>
-                <a href="" className="title-cadastrar">Cadastrar</a>
-            </li>
-
-        </header><div className='backgroundcontainer'>
-
-                <div className='content'></div>
-            </div>
+        <>
+        
+         <div className="imagemfundo"><img src={imagemFundo.src}/></div>
             
             <div className="forms">
 
+                <div className="logoministry"><img src={imagemMinistry.src}/></div>
 
-                <img src={NazaLogo.src} alt="" />
+                  <div className="azul">
                 <p className="titulo">Faça Cadastro</p>
                 <p className="normal">Faça cadastro para acessar o sistema</p>
         <form onSubmit={handleSubmit(onSubmit)}>
         
             <div>
+                <h2>Nome</h2>
             <Input placeholder="Nome" {...register("name")}/>
         
                     {errors?.name && (
@@ -85,7 +77,8 @@ async function onSubmit(data: SignUpFormSchema) {
                 </div>
         
             <div>
-            <Input placeholder="email" type="email" {...register("email")}/>
+                <h2>Email</h2>
+            <Input placeholder="you@example.com" type="email" {...register("email")}/>
         
                     {errors?.email && (
                 <div className="text-red-500 text-xs">
@@ -96,7 +89,8 @@ async function onSubmit(data: SignUpFormSchema) {
             </div>
 
             <div>
-            <Input placeholder="Sua função (ex: guitarrista, cantor)" type="text" {...register("funcaoSolicitada")} />
+                <h2>Sua função</h2>
+            <Input placeholder="(ex: guitarrista, cantor)" type="text" {...register("funcaoSolicitada")} />
         
                     {errors?.funcaoSolicitada && (
                 <div className="text-red-500 text-xs">
@@ -107,7 +101,8 @@ async function onSubmit(data: SignUpFormSchema) {
             </div>
         
             <div>
-            <Input placeholder="Senha" type="password" {...register("password")} />
+                <h2>Senha</h2>
+            <Input placeholder="••••••••" type="password" {...register("password")} />
         
                     {errors?.password && (
                 <div className="text-red-500 text-xs">
@@ -129,9 +124,13 @@ async function onSubmit(data: SignUpFormSchema) {
                 </div>
         
                 <Button>cadastrar</Button>
-        
-        </form>
+        <div className="final">
+                <span>ou</span>
+                <h3>Já tem uma conta?<a href="/login">Iniciar sessão </a></h3>
+                </div>
+            </form>
         </div>
+</div>
         </>
         
     )

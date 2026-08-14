@@ -8,7 +8,7 @@ body {
   flex-direction: row;
   display: flex;
   background-image: url('../../components/ui/IMG_7461.JPG');
-  background-size: cover;
+  background-size: 100%;
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -33,7 +33,6 @@ header a {
   cursor: pointer;
 }
 
-
 .forms {
   position: absolute;
   top: 50%;
@@ -48,6 +47,8 @@ header a {
   max-width: 450px;
   height: 400px;
   overflow-y: auto;
+  max-height: 80vh;
+  overflow-y: auto;
   padding: 20px 0;
   border-radius: 3%;
 }
@@ -59,7 +60,7 @@ header a {
 
 
 button {
-  width: 90%;
+  width: 100%;
   height: 30px;
   padding: 0 12px;
   border: 1px solid #d1d5db;
@@ -87,5 +88,20 @@ input{
     padding: 10px 14px;
 }
 .cultos-criados{
-  margin-top: 30px;
+  margin-top: 40px;
+}
+
+.pai{
+    margin-bottom: 50px;
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+    
+}
+
+.pai input{
+    margin: 30px;
+    width: 100%;
+    height: 44px;
+    padding: 8px 12px;
 }

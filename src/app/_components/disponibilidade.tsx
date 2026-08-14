@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
-import "./geral.css";
+import "./disponibilidade.css"
+import imagemFundo from "@/components/ui/IMG_6545.jpg"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 
 type Culto = {
   id: string;
@@ -136,45 +138,58 @@ export default function Disponibilidade() {
   if (carregando) return <p>Carregando...</p>;
 
   return (
-    <div className="forms">
-      <p className="titulo">Minha disponibilidade</p>
+    <>
+      <header>
+        <div className="logoministry"><img src={imagemMinistry.src}/></div>
+        <a href="/atribuir-ministerio">Atribuir</a>
+        <a href="/cultos">Cultos</a>
+        <a href="/gerar-escala">Escala</a>
+        <a href="/ministerio">Ministério</a>
+        <a href="/modelos-cultos">Modelos</a>
+        <a href="/vagas-culto">Vagas</a>
+        <a href="/tabela">Tabela</a>
+      </header>
 
-      {ministerios.length === 0 ? (
-        <p>Você ainda não está vinculado a nenhum ministério.</p>
-      ) : (
-        ministerios.map((ministerio) => (
-          <div key={ministerio.id}>
-            <h3>{ministerio.ministerio}</h3>
+      <div className="forms">
+        <p className="titulo">Minha disponibilidade</p>
 
-            {cultos.length === 0 ? (
-              <p>Nenhum culto cadastrado ainda.</p>
-            ) : (
-              <ul className="lista-c">
-                {cultos.map((culto) => {
-                  const chave = `${culto.id}-${ministerio.id}`;
-                  return (
-                    <li key={chave} className="lista-culto">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={selecionados.has(chave)}
-                          onChange={() => alternar(culto.id, ministerio.id)}
-                        />
-                        {new Date(culto.dia + "T00:00:00").toLocaleDateString("pt-BR")}
-                        {culto.descricao && ` — ${culto.descricao}`}
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        ))
-      )}
+        {ministerios.length === 0 ? (
+          <p>Você ainda não está vinculado a nenhum ministério.</p>
+        ) : (
+          ministerios.map((ministerio) => (
+            <div key={ministerio.id}>
+              <h3>{ministerio.ministerio}</h3>
 
-      <Button onClick={salvar}>Salvar disponibilidade</Button>
+              {cultos.length === 0 ? (
+                <p>Nenhum culto cadastrado ainda.</p>
+              ) : (
+                <ul className="lista-c">
+                  {cultos.map((culto) => {
+                    const chave = `${culto.id}-${ministerio.id}`;
+                    return (
+                      <li key={chave} className="lista-culto">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={selecionados.has(chave)}
+                            onChange={() => alternar(culto.id, ministerio.id)}
+                          />
+                          {new Date(culto.dia + "T00:00:00").toLocaleDateString("pt-BR")}
+                          {culto.descricao && ` — ${culto.descricao}`}
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          ))
+        )}
 
-      {mensagem && <p>{mensagem}</p>}
-    </div>
+        <Button onClick={salvar}>Salvar disponibilidade</Button>
+
+        {mensagem && <p>{mensagem}</p>}
+      </div>
+    </>
   );
 }

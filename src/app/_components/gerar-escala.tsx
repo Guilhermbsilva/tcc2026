@@ -7,7 +7,9 @@ import { gerarEscalaSchema, GerarEscalaSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { gerarEscala } from "@/lib/gerar-escala";
-import "./geral.css";
+import "./gerar-escala.css"
+import imagemFundo from "@/components/ui/IMG_6545.jpg"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 
 type Culto = { id: string; dia: string; descricao: string | null };
 type Ministerio = { id: string; ministerio: string };
@@ -93,11 +95,24 @@ export default function GerarEscala() {
   }
 
   return (
+    <>
+         <header>
+        <div className="logoministry"><img src={imagemMinistry.src}/></div>
+        <a href="/atribuir-ministerio">Atribuir</a>
+        <a href="/cultos">Cultos</a>
+        <a href="/ministerios">Ministério</a>
+        <a href="/modelos-cultos">Modelos</a>
+        <a href="/vagas-culto">Vagas</a>
+        <a href="/disponibilidade">Disponivel</a>
+        <a href="/tabela">Tabela</a>
+      </header>
+
     <div className="forms">
       <p className="titulo">Gerar escala</p>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
+          <div className="pai">
           <select {...register("culto_id")}>
             <option value="">Selecione o culto</option>
             {cultos.map((c) => (
@@ -108,9 +123,9 @@ export default function GerarEscala() {
             ))}
           </select>
           {errors?.culto_id && <span>{errors.culto_id.message}</span>}
-        </div>
+        
 
-        <div>
+        
           <select {...register("ministerio_id")}>
             <option value="">Selecione o ministério</option>
             {ministerios.map((m) => (
@@ -119,7 +134,7 @@ export default function GerarEscala() {
           </select>
           {errors?.ministerio_id && <span>{errors.ministerio_id.message}</span>}
         </div>
-
+</div>
         <Button type="submit" disabled={gerando}>
           {gerando ? "Gerando..." : "Gerar escala"}
         </Button>
@@ -153,5 +168,6 @@ export default function GerarEscala() {
         </div>
       )}
     </div>
+    </>
   );
 }

@@ -13,6 +13,14 @@ body {
   background-repeat: no-repeat;
 }
 
+.container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+}
+
 header {
   position: relative;
   width: 150px;
@@ -23,7 +31,7 @@ header {
 }
 
 header a {
-  margin: 30px
+  margin: 30px;
 }
 
 .logoministry {
@@ -32,7 +40,6 @@ header a {
   display: flex;
   cursor: pointer;
 }
-
 
 .forms {
   position: absolute;
@@ -88,4 +95,8 @@ input{
 }
 .cultos-criados{
   margin-top: 30px;
+}
+
+form .select{
+    margin-bottom: 200px;
 }

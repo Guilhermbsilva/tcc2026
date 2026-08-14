@@ -6,7 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { modeloCultoSchema, ModeloCultoSchema, funcaoTemplateSchema, FuncaoTemplateSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import "./geral.css";
+import "./modelo-cultos.css"
+import imagemFundo from "@/components/ui/IMG_6545.jpg"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 
 type Modelo = { id: string; nome: string };
 type FuncaoModelo = { id: string; funcao: string; quantidade: number };
@@ -79,6 +81,20 @@ export default function GerenciarTemplates() {
   }
 
   return (
+      <>
+
+      <header>
+        <div className="logoministry"><img src={imagemMinistry.src}/></div>
+        <a href="/atribuir-ministerio">Atribuir</a>
+          <a href="/cultos">Cultos</a>
+        <a href="/gerar-escala">Escala</a>
+        <a href="/ministerios">Ministério</a>
+        <a href="/vagas-culto">Vagas</a>
+        <a href="/disponibilidade">Disponivel</a>
+        <a href="/tabela">Tabela</a>
+      </header>
+
+   
     <div className="forms">
       <p className="titulo">Templates de culto</p>
 
@@ -122,5 +138,6 @@ export default function GerenciarTemplates() {
         </div>
       )}
     </div>
+    </>
   );
 }

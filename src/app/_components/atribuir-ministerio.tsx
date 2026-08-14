@@ -6,7 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { vincularMinisterioSchema, VincularMinisterioSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import "./geral.css";
+import imagemFundo from "@/components/ui/IMG_6545.jpg"
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
+import "./atribuir-ministerio.css"
 
 type Usuario = { id: string; nome: string };
 type Ministerio = { id: string; ministerio: string };
@@ -106,8 +108,20 @@ async function remover(id: string) {
 }
 
   return (
+<>
+       <header>
+            <div className="logoministry"><img src={imagemMinistry.src}/></div>
+            <a href="/cultos">Cultos</a>
+            <a href="/gerar-escala">Escala</a>
+            <a href="/ministerio">Ministério</a>
+            <a href="/modelos-cultos">Modelos</a>
+            <a href="/vagas-culto">Vagas</a>
+            <a href="/disponibilidade">Disponivel</a>
+            <a href="/tabela">Tabelas</a>
+          </header>
+    
     <div className="forms">
-      <p className="titulo">Vincular usuário a ministério</p>
+      <p className="titulo">Atribuir Ministério</p>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
@@ -131,17 +145,18 @@ async function remover(id: string) {
         </div>
 
         <div>
-          <input type="text" placeholder="Função (ex: guitarrista, cantor)" {...register("funcao")} />
+          <h2>Função:</h2>
+          <input type="text" placeholder="(ex: guitarrista, cantor)" {...register("funcao")} />
           {errors?.funcao && <span>{errors.funcao.message}</span>}
         </div>
 
-        <Button type="submit">Vincular</Button>
+        <Button type="submit">Atribuir</Button>
       </form>
 
       {mensagem && <p>{mensagem}</p>}
 
       <div className="cultos-criados">
-        <h2 className="culto-cad">Vínculos cadastrados</h2>
+        <h2 className="culto-cad">Atribuições:</h2>
 
         {vinculos.length === 0 ? (
           <p>Nenhum vínculo cadastrado.</p>
@@ -159,5 +174,6 @@ async function remover(id: string) {
         )}
       </div>
     </div>
+    </>
   );
 }
