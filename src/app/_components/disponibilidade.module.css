@@ -1,19 +1,14 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  flex-direction: row;
+.pagina {
   display: flex;
-  background-image: url('../../components/ui/IMG_7461.JPG');
+  flex-direction: row;
+  min-height: 100vh;
+  background-image: url('/IMG_7461.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-header {
+.header {
   position: relative;
   width: 150px;
   color: #132858;
@@ -22,7 +17,7 @@ header {
   display: flex;
 }
 
-header a {
+.header a {
   margin: 30px;
 }
 
@@ -30,7 +25,6 @@ header a {
   height: 110px;
   width: 200px;
   display: flex;
- 
 }
 
 .forms {
@@ -54,13 +48,13 @@ header a {
   font-size: 34px;
 }
 
-.lista-culto input[type="checkbox"] {
+.listaCulto input[type="checkbox"] {
   width: 28px;
   height: 38px;
   cursor: pointer;
 }
 
-.lista-culto label {
+.listaCulto label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -68,7 +62,7 @@ header a {
   cursor: pointer;
 }
 
-button {
+.pagina button {
   width: 90%;
   height: 30px;
   padding: 0 12px;
@@ -76,20 +70,16 @@ button {
   border-radius: 6px;
 }
 
-h3 {
+.pagina h3 {
   text-align: center;
 }
 
-a {
+.pagina a {
   transition: all 0.2s ease-in-out;
 }
 
-a:hover {
+.pagina a:hover {
   color: #132858;
   opacity: 0.8;
   transform: translateX(4px);
-}
-
-.pai{
-  margin-bottom: 200px;
 }

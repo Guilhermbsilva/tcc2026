@@ -24,6 +24,7 @@ export default function AtribuirMinisterio() {
   const [ministerios, setMinisterios] = useState<Ministerio[]>([]);
   const [vinculos, setVinculos] = useState<Vinculo[]>([]);
   const [mensagem, setMensagem] = useState<string | null>(null);
+  const [busca, setBusca] = useState("");
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<VincularMinisterioSchema>({
     resolver: zodResolver(vincularMinisterioSchema),
@@ -95,7 +96,7 @@ async function remover(id: string) {
     .from("usuario_ministerio")
     .delete()
     .eq("id", id)
-    .select(); // isso faz o Supabase retornar as linhas que foram de fato deletadas
+    .select(); 
 
   console.log("resultado:", { data, error });
 
@@ -107,17 +108,32 @@ async function remover(id: string) {
   await carregarVinculos();
 }
 
+  const vinculosFiltrados = vinculos.filter((v) =>
+    v.usuario?.nome?.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  const grupos = Array.from(
+    vinculosFiltrados.reduce((mapa, v) => {
+      const nomeMinisterio = v.ministerios?.ministerio ?? "Sem ministério";
+      if (!mapa.has(nomeMinisterio)) {
+        mapa.set(nomeMinisterio, []);
+      }
+      mapa.get(nomeMinisterio)!.push(v);
+      return mapa;
+    }, new Map<string, Vinculo[]>())
+  ).sort((a, b) => a[0].localeCompare(b[0]));
+
   return (
 <>
        <header>
             <div className="logoministry"><img src={imagemMinistry.src}/></div>
             <a href="/cultos">Cultos</a>
             <a href="/gerar-escala">Escala</a>
-            <a href="/ministerio">Ministério</a>
-            <a href="/modelos-cultos">Modelos</a>
+            <a href="/ministerios">Ministério</a>
+            <a href="/modelos-culto">Modelos</a>
             <a href="/vagas-culto">Vagas</a>
             <a href="/disponibilidade">Disponivel</a>
-            <a href="/tabela">Tabelas</a>
+            <a href="/inicio">Tabelas</a>
           </header>
     
     <div className="forms">
@@ -158,19 +174,35 @@ async function remover(id: string) {
       <div className="cultos-criados">
         <h2 className="culto-cad">Atribuições:</h2>
 
-        {vinculos.length === 0 ? (
-          <p>Nenhum vínculo cadastrado.</p>
+        <input
+          type="text"
+          placeholder="Buscar por nome..."
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+          style={{ marginBottom: 16, width: "100%" }}
+        />
+
+        {grupos.length === 0 ? (
+          <p>Nenhuma atribuição encontrada.</p>
         ) : (
-          <ul className="lista-c">
-            {vinculos.map((v) => (
-              <li key={v.id} className="lista-culto">
-                {v.usuario?.nome} — {v.ministerios?.ministerio} ({v.funcao})
-                <Button type="button" variant="destructive" onClick={() => remover(v.id)}>
-                Remover
-                </Button>
-              </li>
-            ))}
-          </ul>
+          grupos.map(([nomeMinisterio, itens]) => (
+            <details key={nomeMinisterio} open style={{ marginBottom: 12 }}>
+              <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: 16, padding: "8px 0" }}>
+                {nomeMinisterio} ({itens.length})
+              </summary>
+
+              <ul className="lista-c">
+                {itens.map((v) => (
+                  <li key={v.id} className="lista-culto">
+                    {v.usuario?.nome} — {v.funcao}
+                    <Button type="button" variant="destructive" onClick={() => remover(v.id)}>
+                      Remover
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ))
         )}
       </div>
     </div>

@@ -10,7 +10,6 @@ import { supabase } from "@/lib/supabase";
 import { signInSchema } from "../_schemas/auth-schemas"
 import { useRouter } from "next/navigation";
 import "./login.css"
-import imagemFundo from "@/components/ui/IMG_7461.png"
 import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 import Link from "next/link";
 type FormData = {
@@ -47,12 +46,12 @@ async function onSubmit(data: SignInSchema ) {
       return;
     }
 
-    router.push("disponibilidade");
+    window.location.href = "/disponibilidade";
 }
 
     return(
 
-        <> <div className="imagemfundo"><img src={imagemFundo.src}/></div>
+        <> <div className="imagemfundo"><img src="/IMG_7461.png" alt="" /></div>
         
         
             <div className="forms">

@@ -10,11 +10,14 @@ import "./modelo-cultos.css"
 import imagemFundo from "@/components/ui/IMG_6545.jpg"
 import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
 
-type Modelo = { id: string; nome: string };
+type Modelo = { id: string; nome: string; ministerio_id: string };
+type Ministerio = { id: string; ministerio: string };
 type FuncaoModelo = { id: string; funcao: string; quantidade: number };
 
 export default function GerenciarTemplates() {
   const [modelos, setModelos] = useState<Modelo[]>([]);
+  const [ministerios, setMinisterios] = useState<Ministerio[]>([]);
+  const [ministerioFiltro, setMinisterioFiltro] = useState<string>("");
   const [modeloSelecionado, setModeloSelecionado] = useState<string | null>(null);
   const [funcoes, setFuncoes] = useState<FuncaoModelo[]>([]);
 
@@ -23,6 +26,7 @@ export default function GerenciarTemplates() {
 
   useEffect(() => {
     carregarModelos();
+    carregarMinisterios();
   }, []);
 
   useEffect(() => {
@@ -30,8 +34,13 @@ export default function GerenciarTemplates() {
   }, [modeloSelecionado]);
 
   async function carregarModelos() {
-    const { data } = await supabase.from("modelos_culto").select("id, nome").order("nome");
+    const { data } = await supabase.from("modelos_culto").select("id, nome, ministerio_id").order("nome");
     setModelos(data ?? []);
+  }
+
+  async function carregarMinisterios() {
+    const { data } = await supabase.from("ministerios").select("id, ministerio").order("ministerio");
+    setMinisterios(data ?? []);
   }
 
   async function carregarFuncoes(modeloId: string) {
@@ -45,7 +54,7 @@ export default function GerenciarTemplates() {
   async function criarModelo(data: ModeloCultoSchema) {
     const { data: novo, error } = await supabase
       .from("modelos_culto")
-      .insert([{ nome: data.nome }])
+      .insert([{ nome: data.nome, ministerio_id: data.ministerio_id }])
       .select()
       .single();
 
@@ -80,6 +89,29 @@ export default function GerenciarTemplates() {
     if (modeloSelecionado) await carregarFuncoes(modeloSelecionado);
   }
 
+  async function removerModelo(id: string) {
+    const confirmar = window.confirm("Remover este template? As funções associadas a ele também serão removidas.");
+    if (!confirmar) return;
+
+    await supabase.from("modelos_culto_funcao").delete().eq("modelo_culto_id", id);
+    await supabase.from("modelos_culto").delete().eq("id", id);
+
+    if (modeloSelecionado === id) {
+      setModeloSelecionado(null);
+      setFuncoes([]);
+    }
+
+    await carregarModelos();
+  }
+
+  function nomeMinisterio(id: string) {
+    return ministerios.find((m) => String(m.id) === String(id))?.ministerio ?? "?";
+  }
+
+  const modelosFiltrados = ministerioFiltro
+    ? modelos.filter((m) => String(m.ministerio_id) === String(ministerioFiltro))
+    : modelos;
+
   return (
       <>
 
@@ -91,7 +123,7 @@ export default function GerenciarTemplates() {
         <a href="/ministerios">Ministério</a>
         <a href="/vagas-culto">Vagas</a>
         <a href="/disponibilidade">Disponivel</a>
-        <a href="/tabela">Tabela</a>
+        <a href="/inicio">Tabela</a>
       </header>
 
    
@@ -101,17 +133,41 @@ export default function GerenciarTemplates() {
       <form onSubmit={formModelo.handleSubmit(criarModelo)}>
         <input type="text" placeholder="Nome do template (ex: Domingo Manhã)" {...formModelo.register("nome")} />
         {formModelo.formState.errors.nome && <span>{formModelo.formState.errors.nome.message}</span>}
-        <Button type="submit">Criar template</Button>
+
+        <select {...formModelo.register("ministerio_id")}>
+          <option value="">Selecione o ministério</option>
+          {ministerios.map((m) => (
+            <option key={m.id} value={m.id}>{m.ministerio}</option>
+          ))}
+        </select>
+        {formModelo.formState.errors.ministerio_id && <span>{formModelo.formState.errors.ministerio_id.message}</span>}
+
+        <Button className="botao-principal" type="submit">Criar template</Button>
       </form>
 
       <div>
         <h3>Templates existentes</h3>
+
+        <select value={ministerioFiltro} onChange={(e) => setMinisterioFiltro(e.target.value)}>
+          <option value="">Todos os ministérios</option>
+          {ministerios.map((m) => (
+            <option key={m.id} value={m.id}>{m.ministerio}</option>
+          ))}
+        </select>
+
         <ul className="lista-c">
-          {modelos.map((m) => (
+          {modelosFiltrados.map((m) => (
             <li key={m.id} className="lista-culto">
-              <button type="button" onClick={() => setModeloSelecionado(m.id)}>
-                {m.nome} {modeloSelecionado === m.id && "(selecionado)"}
-              </button>
+              <span
+                onClick={() => setModeloSelecionado(m.id)}
+                style={{ cursor: "pointer", fontWeight: modeloSelecionado === m.id ? 700 : 400 }}
+              >
+                {m.nome} — {nomeMinisterio(m.ministerio_id)}
+                {modeloSelecionado === m.id && " (selecionado)"}
+              </span>
+              <Button type="button" variant="destructive" onClick={() => removerModelo(m.id)}>
+                Remover
+              </Button>
             </li>
           ))}
         </ul>
@@ -124,14 +180,16 @@ export default function GerenciarTemplates() {
           <form onSubmit={formFuncao.handleSubmit(adicionarFuncao)}>
             <input type="text" placeholder="Função (ex: guitarrista)" {...formFuncao.register("funcao")} />
             <input type="number" placeholder="Quantidade" {...formFuncao.register("quantidade", { valueAsNumber: true })} />
-            <Button type="submit">Adicionar</Button>
+            <Button className="botao-principal" type="submit">Adicionar</Button>
           </form>
 
           <ul className="lista-c">
             {funcoes.map((f) => (
               <li key={f.id} className="lista-culto">
-                {f.funcao} — {f.quantidade} vaga(s)
-                <Button type="button" variant="destructive" onClick={() => removerFuncao(f.id)}>Remover</Button>
+                <span>{f.funcao} — {f.quantidade} vaga(s)</span>
+                <Button type="button" variant="destructive" onClick={() => removerFuncao(f.id)}>
+                  Remover
+                </Button>
               </li>
             ))}
           </ul>

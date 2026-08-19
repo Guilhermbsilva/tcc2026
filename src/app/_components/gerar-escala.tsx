@@ -51,9 +51,39 @@ export default function GerarEscala() {
     setMinisterios(ministeriosData ?? []);
   }
 
+  async function apagarEscalaExistente(cultoId: string, ministerioId: string) {
+    const { data: escalaExistente } = await supabase
+      .from("escalas")
+      .select("id")
+      .eq("culto_id", cultoId)
+      .eq("ministerio_id", ministerioId)
+      .maybeSingle();
+
+    if (!escalaExistente) return;
+
+    await supabase.from("escala_usuario").delete().eq("escala_id", escalaExistente.id);
+    await supabase.from("escalas").delete().eq("id", escalaExistente.id);
+  }
+
   async function onSubmit(data: GerarEscalaSchema) {
     setErro(null);
     setResultado(null);
+
+    // verifica se já existe escala pra esse culto + ministério
+    const { data: escalaExistente } = await supabase
+      .from("escalas")
+      .select("id")
+      .eq("culto_id", data.culto_id)
+      .eq("ministerio_id", data.ministerio_id)
+      .maybeSingle();
+
+    if (escalaExistente) {
+      const confirmar = window.confirm(
+        "Já existe uma escala gerada para esse culto e ministério. Deseja substituí-la por uma nova?"
+      );
+      if (!confirmar) return;
+    }
+
     setGerando(true);
 
     try {
@@ -67,6 +97,10 @@ export default function GerarEscala() {
         .single();
 
       if (!usuarioAdmin) throw new Error("Usuário não encontrado");
+
+      if (escalaExistente) {
+        await apagarEscalaExistente(data.culto_id, data.ministerio_id);
+      }
 
       const resultado = await gerarEscala(data.culto_id, data.ministerio_id, usuarioAdmin.id);
 
@@ -88,7 +122,11 @@ export default function GerarEscala() {
       setResultado(resultado);
     } catch (e: any) {
       console.error(e);
-      setErro(e.message ?? "Erro ao gerar escala.");
+      if (e.code === "23505") {
+        setErro("Já existe uma escala para esse culto e ministério. Tente novamente para substituí-la.");
+      } else {
+        setErro(e.message ?? "Erro ao gerar escala.");
+      }
     } finally {
       setGerando(false);
     }
@@ -101,10 +139,10 @@ export default function GerarEscala() {
         <a href="/atribuir-ministerio">Atribuir</a>
         <a href="/cultos">Cultos</a>
         <a href="/ministerios">Ministério</a>
-        <a href="/modelos-cultos">Modelos</a>
+        <a href="/modelos-culto">Modelos</a>
         <a href="/vagas-culto">Vagas</a>
         <a href="/disponibilidade">Disponivel</a>
-        <a href="/tabela">Tabela</a>
+        <a href="/inicio">Tabela</a>
       </header>
 
     <div className="forms">

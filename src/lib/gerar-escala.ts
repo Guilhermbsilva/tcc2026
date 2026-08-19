@@ -15,10 +15,11 @@ export async function gerarEscala(cultoId: string, ministerioId: string, criadoP
   const diaSemanaAtual = new Date(culto.dia + "T00:00:00").getDay();
 
   // 2. vagas necessárias
-  const { data: vagas } = await supabase
-    .from("cultos_funcao")
-    .select("funcao, quantidade")
-    .eq("culto_id", cultoId);
+const { data: vagas } = await supabase
+  .from("cultos_funcao")
+  .select("funcao, quantidade")
+  .eq("culto_id", cultoId)
+  .eq("ministerio_id", ministerioId);
 
   if (!vagas || vagas.length === 0) throw new Error("Nenhuma vaga definida para este culto");
 

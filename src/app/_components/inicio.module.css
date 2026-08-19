@@ -1,0 +1,67 @@
+.pagina {
+  padding: 40px;
+  width: 100%;
+}
+
+.tituloPagina {
+  font-size: 28px;
+  color: #132858;
+  margin-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background-color: #d4d4d8;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cardTitulo {
+  font-weight: 700;
+  font-size: 16px;
+  color: #18181b;
+}
+
+.cardData {
+  font-size: 13px;
+  color: #3f3f46;
+  margin-top: 2px;
+}
+
+.cardMinisterio {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #52525b;
+}
+
+.avatares {
+  display: flex;
+  margin-top: 16px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  border: 2px solid #d4d4d8;
+  margin-left: -10px;
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}

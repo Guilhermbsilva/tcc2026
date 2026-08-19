@@ -46,6 +46,7 @@ export type GerarEscalaSchema = z.infer<typeof gerarEscalaSchema>;
 
 export const modeloCultoSchema = z.object({
   nome: z.string().min(1, { message: "informe o nome do template" }).max(255),
+  ministerio_id: z.string().min(1, { message: "selecione um ministério" }),
 });
 
 export type ModeloCultoSchema = z.infer<typeof modeloCultoSchema>;

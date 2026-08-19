@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
-import "./disponibilidade.css"
-import imagemFundo from "@/components/ui/IMG_6545.jpg"
-import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
+import "./disponibilidade.module.css"
+
+import styles from "./disponibilidade.module.css";
+import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png";
 
 type Culto = {
   id: string;
@@ -137,21 +138,23 @@ export default function Disponibilidade() {
 
   if (carregando) return <p>Carregando...</p>;
 
+
+
   return (
-    <>
-      <header>
-        <div className="logoministry"><img src={imagemMinistry.src}/></div>
+    <div className={styles.pagina}>
+      <header className={styles.header}>
+        <div className={styles.logoministry}><img src={imagemMinistry.src} /></div>
         <a href="/atribuir-ministerio">Atribuir</a>
         <a href="/cultos">Cultos</a>
         <a href="/gerar-escala">Escala</a>
-        <a href="/ministerio">Ministério</a>
-        <a href="/modelos-cultos">Modelos</a>
+        <a href="/ministerios">Ministério</a>
+        <a href="/modelos-culto">Modelos</a>
         <a href="/vagas-culto">Vagas</a>
-        <a href="/tabela">Tabela</a>
+        <a href="/inicio">Tabela</a>
       </header>
 
-      <div className="forms">
-        <p className="titulo">Minha disponibilidade</p>
+      <div className={styles.forms}>
+        <p className={styles.titulo}>Minha disponibilidade</p>
 
         {ministerios.length === 0 ? (
           <p>Você ainda não está vinculado a nenhum ministério.</p>
@@ -163,11 +166,11 @@ export default function Disponibilidade() {
               {cultos.length === 0 ? (
                 <p>Nenhum culto cadastrado ainda.</p>
               ) : (
-                <ul className="lista-c">
+                <ul>
                   {cultos.map((culto) => {
                     const chave = `${culto.id}-${ministerio.id}`;
                     return (
-                      <li key={chave} className="lista-culto">
+                      <li key={chave} className={styles.listaCulto}>
                         <label>
                           <input
                             type="checkbox"
@@ -190,6 +193,6 @@ export default function Disponibilidade() {
 
         {mensagem && <p>{mensagem}</p>}
       </div>
-    </>
+    </div>
   );
 }

@@ -31,10 +31,15 @@ export default function AuthGuard({ children, adminOnly = false }: AuthGuardProp
           .single();
 
         if (error || usuario?.cargo !== "admin") {
-          router.push("/"); // depois pode trocar por uma página de "acesso negado"
+          alert("Você não tem permissão para acessar essa página.");
+          const ultimaPagina = sessionStorage.getItem("ultima_pagina_permitida") || "/inicio";
+          router.push(ultimaPagina);
           return;
         }
       }
+
+      // chegou até aqui = tem permissão pra estar nessa página, então guarda como "última página válida"
+      sessionStorage.setItem("ultima_pagina_permitida", window.location.pathname);
 
       setAutorizado(true);
       setCarregando(false);

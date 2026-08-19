@@ -70,6 +70,24 @@ async function onSubmit(data: cultoSchema) {
 
 }
 
+async function removerCulto(id: number) {
+  const confirmar = window.confirm("Tem certeza que deseja remover este culto? Isso também vai apagar vagas, disponibilidades e escalas ligadas a ele.");
+  if (!confirmar) return;
+
+  const { error } = await supabase
+    .from("cultos")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    alert("Erro ao remover culto. Verifique o console.");
+    return;
+  }
+
+  await carregarCultos();
+}
+
 useEffect(() => {
   carregarCultos();
 }, []);
@@ -83,10 +101,10 @@ return(
         <a href="/atribuir-ministerio">Atribuir</a>
         <a href="/gerar-escala">Escala</a>
         <a href="/ministerios">Ministério</a>
-        <a href="/modelos-cultos">Modelos</a>
+        <a href="/modelos-culto">Modelos</a>
         <a href="/vagas-culto">Vagas</a>
         <a href="/disponibilidade">Disponivel</a>
-        <a href="/tabela">Tabela</a>
+        <a href="/inicio">Tabela</a>
       </header>
 
    
@@ -120,6 +138,9 @@ return(
             <li key={culto.id} className="lista-culto">
             {new Date(culto.dia + "T00:00:00").toLocaleDateString("pt-BR")}
             {culto.descricao && `- ${culto.descricao}`}
+            <Button type="button" variant="destructive" onClick={() => removerCulto(culto.id)}>
+              Remover
+            </Button>
         </li>
       ))}
     </ul>
@@ -131,5 +152,3 @@ return(
         </div>
 </>
 )}
-
-

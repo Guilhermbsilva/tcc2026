@@ -57,14 +57,28 @@ header a {
 }
 
 
-button {
-  width: 100%;
+.botao-principal {
   height: 30px;
   padding: 0 12px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
   color: #ffffff;
   background-color: rgb(17, 17, 17);
+}
+
+.lista-culto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.lista-culto button {
+  width: auto;
+  height: auto;
+  padding: 4px 10px;
+  font-size: 13px;
 }
 
 h3 {

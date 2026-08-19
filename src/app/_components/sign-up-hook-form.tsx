@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input";
 import {useForm} from "react-hook-form";
@@ -7,8 +8,9 @@ import { signUpFormSchema, SignUpFormSchema } from "../_schemas/auth-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "./sign-up-form.css"
 import { supabase } from "@/lib/supabase";
-import imagemFundo from "@/components/ui/IMG_7461.png"
 import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
+import { useRouter } from "next/navigation";
+
 type FormData = {
     nome: string;
     email: string;
@@ -16,12 +18,18 @@ type FormData = {
 }
 
 export default function SignUpHookForm() {
-    
+    const router = useRouter();
+    const [cadastroError, setCadastroError] = useState<string | null>(null);
+    const [cadastroSucesso, setCadastroSucesso] = useState(false);
+
     const {register, handleSubmit, formState: {errors}} = useForm<SignUpFormSchema>({resolver: zodResolver(signUpFormSchema),
 
     });
 
 async function onSubmit(data: SignUpFormSchema) {
+  setCadastroError(null);
+  setCadastroSucesso(false);
+
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
@@ -29,6 +37,13 @@ async function onSubmit(data: SignUpFormSchema) {
 
   if (authError) {
     console.error(authError);
+    setCadastroError("Erro ao cadastrar. Tente novamente.");
+    return;
+  }
+
+  // detecta email já cadastrado (identities vazio = usuário já existe)
+  if (authData.user && authData.user.identities && authData.user.identities.length === 0) {
+    setCadastroError("Esse email já está cadastrado. Tente fazer login.");
     return;
   }
 
@@ -45,15 +60,20 @@ async function onSubmit(data: SignUpFormSchema) {
 
   if (insertError) {
     console.error(insertError);
+    setCadastroError("Erro ao salvar seus dados. Tente novamente.");
     return;
   }
+
+  setCadastroSucesso(true);
+  router.push("/login")
+
 }
 
     return(
 
         <>
         
-         <div className="imagemfundo"><img src={imagemFundo.src}/></div>
+         <div className="imagemfundo"><img src="/IMG_7461.png" alt="" /></div>
             
             <div className="forms">
 
@@ -122,6 +142,14 @@ async function onSubmit(data: SignUpFormSchema) {
                     )}
         
                 </div>
+
+                {cadastroError && (
+                    <div className="text-red-500 text-xs">{cadastroError}</div>
+                )}
+
+                {cadastroSucesso && (
+                    <div className="text-green-600 text-xs">Cadastro realizado com sucesso! Você já pode fazer login.</div>
+                )}
         
                 <Button>cadastrar</Button>
         <div className="final">

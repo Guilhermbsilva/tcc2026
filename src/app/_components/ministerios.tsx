@@ -77,10 +77,10 @@ export default function Ministerios() {
             <a href="/atribuir-ministerio">Atribuir</a>
             <a href="/cultos">Cultos</a>
             <a href="/gerar-escala">Escala</a>
-            <a href="/modelos-cultos">Modelos</a>
+            <a href="/modelos-culto">Modelos</a>
             <a href="/vagas-culto">Vagas</a>
             <a href="/disponibilidade">Disponivel</a>
-            <a href="tabela">Tabela</a>
+            <a href="/inicio">Tabela</a>
           </header>
     
     <div className="forms">
