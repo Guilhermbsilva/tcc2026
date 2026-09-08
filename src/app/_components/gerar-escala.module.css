@@ -1,0 +1,88 @@
+.pagina {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-image: url('/IMG_7461.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.forms {
+  position: relative;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  gap: 12px;
+}
+
+.titulo {
+  color: var(--cor-primaria);
+  font-size: 30px;
+  text-align: center;
+}
+
+.pai {
+  margin-bottom: 12px;
+  justify-content: center;
+  flex-direction: column;
+  display: flex;
+  gap: 12px;
+}
+
+.pai select {
+  width: 100%;
+  height: 44px;
+  padding: 8px 12px;
+}
+
+.botaoPrincipal {
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  background-color: var(--cor-primaria);
+  cursor: pointer;
+  width: 100%;
+}
+
+.botaoPrincipal:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.subtitulo {
+  text-align: center;
+  color: var(--cor-primaria);
+}
+
+.listaCulto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  list-style: none;
+}
+
+.erro {
+  color: #ef4444;
+  text-align: center;
+}
+
+.aviso {
+  color: #ca8a04;
+  text-align: center;
+}

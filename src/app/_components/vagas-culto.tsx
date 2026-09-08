@@ -6,9 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { funcaoTemplateSchema, FuncaoTemplateSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import "./vagas-culto.css"
-import imagemFundo from "@/components/ui/IMG_6545.jpg"
-import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
+import styles from "./vagas-culto.module.css";
 
 type Culto = { id: string; dia: string; descricao: string | null };
 type Modelo = { id: string; nome: string; ministerio_id: string };
@@ -41,9 +39,9 @@ export default function VagasCulto() {
     setCultos(cultosData ?? []);
 
     const { data: modelosData } = await supabase
-    .from("modelos_culto")
-    .select("id, nome, ministerio_id")
-    .order("nome");
+      .from("modelos_culto")
+      .select("id, nome, ministerio_id")
+      .order("nome");
     setModelos(modelosData ?? []);
 
     const { data: ministeriosData } = await supabase.from("ministerios").select("id, ministerio").order("ministerio");
@@ -123,95 +121,81 @@ export default function VagasCulto() {
     if (cultoSelecionado) await carregarVagas(cultoSelecionado);
   }
 
-  // filtra a lista pra mostrar só as vagas do ministério selecionado
-const vagasFiltradas = ministerioSelecionado
-  ? vagas.filter((v) => String(v.ministerio_id) === String(ministerioSelecionado))
-  : vagas;
+  const vagasFiltradas = ministerioSelecionado
+    ? vagas.filter((v) => String(v.ministerio_id) === String(ministerioSelecionado))
+    : vagas;
 
-function nomeMinisterio(id: string) {
-  return ministerios.find((m) => String(m.id) === String(id))?.ministerio ?? "?";
-}
+  function nomeMinisterio(id: string) {
+    return ministerios.find((m) => String(m.id) === String(id))?.ministerio ?? "?";
+  }
 
   return (
-    <>
-    <div className="container">
-      <header>
-        <div className="logoministry"><img src={imagemMinistry.src}/></div>
-        <a href="/atribuir-ministerio">Atribuir</a>
-        <a href="/cultos">Cultos</a>
-        <a href="/gerar-escala">Gerar Escala</a>
-        <a href="/ministerios">Ministério</a>
-        <a href="/modelos-culto">Modelos</a>
-        <a href="/disponibilidade">Disponivel</a>
-        <a href="/inicio">Tabela</a>
-      </header>
+    <div className={styles.pagina}>
+      <div className={styles.forms}>
+        <p className={styles.titulo}>Vagas Disponíveis</p>
 
-    <div className="forms">
-      <p className="titulo">Vagas Disponiveis</p>
+        <select value={cultoSelecionado} onChange={(e) => setCultoSelecionado(e.target.value)}>
+          <option value="">Selecione o culto</option>
+          {cultos.map((c) => (
+            <option key={c.id} value={c.id}>
+              {new Date(c.dia + "T00:00:00").toLocaleDateString("pt-BR")}
+              {c.descricao && ` — ${c.descricao}`}
+            </option>
+          ))}
+        </select>
 
-      <select value={cultoSelecionado} onChange={(e) => setCultoSelecionado(e.target.value)}>
-        <option value="">Selecione o culto</option>
-        {cultos.map((c) => (
-          <option key={c.id} value={c.id}>
-            {new Date(c.dia + "T00:00:00").toLocaleDateString("pt-BR")}
-            {c.descricao && ` — ${c.descricao}`}
-          </option>
-        ))}
-      </select>
+        {cultoSelecionado && (
+          <>
+            <select value={ministerioSelecionado} onChange={(e) => setMinisterioSelecionado(e.target.value)}>
+              <option value="">Selecione o ministério</option>
+              {ministerios.map((m) => (
+                <option key={m.id} value={m.id}>{m.ministerio}</option>
+              ))}
+            </select>
 
-      {cultoSelecionado && (
-        <>
-          <select value={ministerioSelecionado} onChange={(e) => setMinisterioSelecionado(e.target.value)}>
-            <option value="">Selecione o ministério</option>
-            {ministerios.map((m) => (
-              <option key={m.id} value={m.id}>{m.ministerio}</option>
-            ))}
-          </select>
+            {ministerioSelecionado && (
+              <>
+                <div>
+                  <label>Aplicar template: </label>
+                  <select onChange={(e) => e.target.value && aplicarTemplate(e.target.value)} defaultValue="">
+                    <option value="">Selecione...</option>
+                    {modelos
+                      .filter((m) => String(m.ministerio_id) === String(ministerioSelecionado))
+                      .map((m) => (
+                        <option key={m.id} value={m.id}>{m.nome}</option>
+                      ))}
+                  </select>
+                </div>
 
-          {ministerioSelecionado && (
-            <>
-              <div>
-                <label>Aplicar template: </label>
-                <select onChange={(e) => e.target.value && aplicarTemplate(e.target.value)} defaultValue="">
-                  <option value="">Selecione...</option>
-                      {modelos
-                        .filter((m) => String(m.ministerio_id) === String(ministerioSelecionado))
-                        .map((m) => (
-                  <option key={m.id} value={m.id}>{m.nome}</option>
-                  ))}
-                </select>
-              </div>
+                <form onSubmit={handleSubmit(adicionarFuncaoManual)}>
+                  <input type="text" placeholder="Função (ex: guitarrista)" {...register("funcao")} />
+                  {errors?.funcao && <span>{errors.funcao.message}</span>}
+                  <input type="number" placeholder="Quantidade" {...register("quantidade", { valueAsNumber: true })} />
+                  <button className={styles.botaoPrincipal} type="submit">Adicionar função</button>
+                </form>
 
-              <form onSubmit={handleSubmit(adicionarFuncaoManual)}>
-                <input type="text" placeholder="Função (ex: guitarrista)" {...register("funcao")} />
-                {errors?.funcao && <span>{errors.funcao.message}</span>}
-                <input type="number" placeholder="Quantidade" {...register("quantidade", { valueAsNumber: true })}/>
-                <Button type="submit">Adicionar função</Button>
-              </form>
+                {mensagem && <p>{mensagem}</p>}
 
-              {mensagem && <p>{mensagem}</p>}
-
-              <div className="cultos-criados">
-                <h2 className="culto-cad">Vagas definidas — {nomeMinisterio(ministerioSelecionado)}</h2>
-                {vagasFiltradas.length === 0 ? (
-                  <p>Nenhuma vaga definida ainda para esse ministério.</p>
-                ) : (
-                  <ul className="lista-c">
-                    {vagasFiltradas.map((v) => (
-                      <li key={v.id} className="lista-culto">
-                        {v.funcao} — {v.quantidade} vaga(s)
-                        <Button type="button" variant="destructive" onClick={() => removerVaga(v.id)}>Remover</Button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </>
-          )}
-        </>
-      )}
+                <div>
+                  <h3 className={styles.subtitulo}>Vagas — {nomeMinisterio(ministerioSelecionado)}</h3>
+                  {vagasFiltradas.length === 0 ? (
+                    <p>Nenhuma vaga definida ainda para esse ministério.</p>
+                  ) : (
+                    <ul>
+                      {vagasFiltradas.map((v) => (
+                        <li key={v.id} className={styles.listaCulto}>
+                          {v.funcao} — {v.quantidade} vaga(s)
+                          <Button type="button" variant="destructive" onClick={() => removerVaga(v.id)}>Remover</Button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </div>
     </div>
-    </div>
-    </>
   );
 }

@@ -4,12 +4,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { gerarEscalaSchema, GerarEscalaSchema } from "../_schemas/auth-schemas";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { gerarEscala } from "@/lib/gerar-escala";
-import "./gerar-escala.css"
-import imagemFundo from "@/components/ui/IMG_6545.jpg"
-import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
+import styles from "./gerar-escala.module.css";
 
 type Culto = { id: string; dia: string; descricao: string | null };
 type Ministerio = { id: string; ministerio: string };
@@ -69,7 +66,6 @@ export default function GerarEscala() {
     setErro(null);
     setResultado(null);
 
-    // verifica se já existe escala pra esse culto + ministério
     const { data: escalaExistente } = await supabase
       .from("escalas")
       .select("id")
@@ -104,7 +100,6 @@ export default function GerarEscala() {
 
       const resultado = await gerarEscala(data.culto_id, data.ministerio_id, usuarioAdmin.id);
 
-      // busca os nomes dos escalados pra exibir
       const idsUsuarios = resultado.escalados.map((e) => e.usuario_id);
       if (idsUsuarios.length > 0) {
         const { data: usuariosData } = await supabase
@@ -133,79 +128,65 @@ export default function GerarEscala() {
   }
 
   return (
-    <>
-         <header>
-        <div className="logoministry"><img src={imagemMinistry.src}/></div>
-        <a href="/atribuir-ministerio">Atribuir</a>
-        <a href="/cultos">Cultos</a>
-        <a href="/ministerios">Ministério</a>
-        <a href="/modelos-culto">Modelos</a>
-        <a href="/vagas-culto">Vagas</a>
-        <a href="/disponibilidade">Disponivel</a>
-        <a href="/inicio">Tabela</a>
-      </header>
+    <div className={styles.pagina}>
+      <div className={styles.forms}>
+        <p className={styles.titulo}>Gerar escala</p>
 
-    <div className="forms">
-      <p className="titulo">Gerar escala</p>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <div className="pai">
-          <select {...register("culto_id")}>
-            <option value="">Selecione o culto</option>
-            {cultos.map((c) => (
-              <option key={c.id} value={c.id}>
-                {new Date(c.dia + "T00:00:00").toLocaleDateString("pt-BR")}
-                {c.descricao && ` — ${c.descricao}`}
-              </option>
-            ))}
-          </select>
-          {errors?.culto_id && <span>{errors.culto_id.message}</span>}
-        
-
-        
-          <select {...register("ministerio_id")}>
-            <option value="">Selecione o ministério</option>
-            {ministerios.map((m) => (
-              <option key={m.id} value={m.id}>{m.ministerio}</option>
-            ))}
-          </select>
-          {errors?.ministerio_id && <span>{errors.ministerio_id.message}</span>}
-        </div>
-</div>
-        <Button type="submit" disabled={gerando}>
-          {gerando ? "Gerando..." : "Gerar escala"}
-        </Button>
-      </form>
-
-      {erro && <p className="text-red-500">{erro}</p>}
-
-      {resultado && (
-        <div className="cultos-criados">
-          <h2 className="culto-cad">Escala gerada</h2>
-
-          {resultado.avisos.length > 0 && (
-            <div>
-              {resultado.avisos.map((aviso, i) => (
-                <p key={i} className="text-yellow-500">{aviso}</p>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.pai}>
+            <select {...register("culto_id")}>
+              <option value="">Selecione o culto</option>
+              {cultos.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {new Date(c.dia + "T00:00:00").toLocaleDateString("pt-BR")}
+                  {c.descricao && ` — ${c.descricao}`}
+                </option>
               ))}
-            </div>
-          )}
+            </select>
+            {errors?.culto_id && <span>{errors.culto_id.message}</span>}
 
-          {resultado.escalados.length === 0 ? (
-            <p>Nenhum escalado.</p>
-          ) : (
-            <ul className="lista-c">
-              {resultado.escalados.map((e, i) => (
-                <li key={i} className="lista-culto">
-                  {nomesUsuarios[e.usuario_id] ?? e.usuario_id} — {e.funcao}
-                </li>
+            <select {...register("ministerio_id")}>
+              <option value="">Selecione o ministério</option>
+              {ministerios.map((m) => (
+                <option key={m.id} value={m.id}>{m.ministerio}</option>
               ))}
-            </ul>
-          )}
-        </div>
-      )}
+            </select>
+            {errors?.ministerio_id && <span>{errors.ministerio_id.message}</span>}
+          </div>
+
+          <button className={styles.botaoPrincipal} type="submit" disabled={gerando}>
+            {gerando ? "Gerando..." : "Gerar escala"}
+          </button>
+        </form>
+
+        {erro && <p className={styles.erro}>{erro}</p>}
+
+        {resultado && (
+          <div>
+            <h3 className={styles.subtitulo}>Escala gerada</h3>
+
+            {resultado.avisos.length > 0 && (
+              <div>
+                {resultado.avisos.map((aviso, i) => (
+                  <p key={i} className={styles.aviso}>{aviso}</p>
+                ))}
+              </div>
+            )}
+
+            {resultado.escalados.length === 0 ? (
+              <p>Nenhum escalado.</p>
+            ) : (
+              <ul>
+                {resultado.escalados.map((e, i) => (
+                  <li key={i} className={styles.listaCulto}>
+                    {nomesUsuarios[e.usuario_id] ?? e.usuario_id} — {e.funcao}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
     </div>
-    </>
   );
 }

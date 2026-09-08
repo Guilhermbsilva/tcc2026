@@ -6,9 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ministerioSchema, MinisterioSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import "./ministerios.css"
-import imagemFundo from "@/components/ui/IMG_6545.jpg"
-import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
+import styles from "./ministerios.module.css";
+
 type Ministerio = {
   id: string;
   ministerio: string;
@@ -71,58 +70,47 @@ export default function Ministerios() {
   }
 
   return (
-    <>
-    <header>
-            <div className="logoministry"><img src={imagemMinistry.src}/></div>
-            <a href="/atribuir-ministerio">Atribuir</a>
-            <a href="/cultos">Cultos</a>
-            <a href="/gerar-escala">Escala</a>
-            <a href="/modelos-culto">Modelos</a>
-            <a href="/vagas-culto">Vagas</a>
-            <a href="/disponibilidade">Disponivel</a>
-            <a href="/inicio">Tabela</a>
-          </header>
-    
-    <div className="forms">
-      <p className="titulo">Criar Ministérios</p>
-   
-      <form onSubmit={handleSubmit(onSubmit)}>
-         <div className="pai">
-        <div>
-          <input type="text" placeholder="Nome do ministério (ex: música)" {...register("ministerio")} />
-          {errors?.ministerio && <span>{errors.ministerio.message}</span>}
+    <div className={styles.pagina}>
+      <div className={styles.conteudo}>
+        <div className={`${styles.card} ${styles.cardCriar}`}>
+          <p className={styles.titulo}>Criar Ministérios</p>
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <input type="text" placeholder="Nome do ministério (ex: música)" {...register("ministerio")} />
+              {errors?.ministerio && <span>{errors.ministerio.message}</span>}
+            </div>
+
+            <div>
+              <input type="text" placeholder="Descrição (opcional)" {...register("descricao")} />
+              {errors?.descricao && <span>{errors.descricao.message}</span>}
+            </div>
+
+            <button className={styles.botaoPrincipal} type="submit">Criar</button>
+          </form>
+
+          {mensagem && <p>{mensagem}</p>}
         </div>
 
-        <div>
-          <input type="text" placeholder="Descrição (opcional)" {...register("descricao")} />
-          {errors?.descricao && <span>{errors.descricao.message}</span>}
+        <div className={`${styles.card} ${styles.cardLista}`}>
+          <p className={styles.titulo}>Ministérios cadastrados</p>
+
+          {ministerios.length === 0 ? (
+            <p className={styles.vazio}>Nenhum ministério cadastrado.</p>
+          ) : (
+            <ul className={styles.listaC}>
+              {ministerios.map((m) => (
+                <li key={m.id} className={styles.listaCulto}>
+                  <span>{m.ministerio}{m.descricao && ` — ${m.descricao}`}</span>
+                  <Button type="button" variant="destructive" onClick={() => remover(m.id)}>
+                    Remover
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-</div>
-        <Button type="submit">Criar</Button>
-      </form>
-
-      {mensagem && <p>{mensagem}</p>}
-
-      <div className="cultos-criados">
-        <h2 className="culto-cad">Ministérios cadastrados</h2>
-
-        {ministerios.length === 0 ? (
-          <p>Nenhum ministério cadastrado.</p>
-        ) : (
-          <ul className="lista-c">
-            {ministerios.map((m) => (
-              <li key={m.id} className="lista-culto">
-                {m.ministerio}
-                {m.descricao && ` — ${m.descricao}`}
-                <Button type="button" variant="destructive" onClick={() => remover(m.id)}>
-                  Remover
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </div>
-    </>
   );
 }

@@ -1,0 +1,30 @@
+.header {
+  position: relative;
+  width: 150px;
+  min-height: 100vh;
+  color: var(--cor-primaria);
+  background-color: #ffffff;
+  flex-direction: column;
+  display: flex;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+.header a {
+  margin: 30px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.header a:hover {
+  color: var(--cor-primaria);
+  opacity: 0.8;
+  transform: translateX(4px);
+}
+
+.logoministry {
+  height: 110px;
+  width: 200px;
+  display: flex;
+  cursor: pointer;
+}

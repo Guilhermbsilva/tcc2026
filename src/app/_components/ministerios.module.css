@@ -1,0 +1,107 @@
+.pagina {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-image: url('/IMG_7461.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 60px 40px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.cardCriar {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cardLista {
+  width: 360px;
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.titulo {
+  color: var(--cor-primaria);
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.cardCriar form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardCriar input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--cor-primaria);
+}
+
+.botaoPrincipal {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  background-color: var(--cor-primaria);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.listaC {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.listaCulto {
+  background-color: var(--cor-primaria);
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.listaCulto button {
+  width: auto;
+  height: auto;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+.vazio {
+  color: var(--cor-primaria);
+}

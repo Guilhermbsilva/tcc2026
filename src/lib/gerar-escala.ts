@@ -79,7 +79,8 @@ const { data: vagas } = await supabase
     const { data: historico } = await supabase
       .from("escala_usuario")
       .select("usuario_id, escalas!inner(criada_em)")
-      .in("usuario_id", candidatosBase.map((c) => c.usuario_id));
+      .in("usuario_id", candidatosBase.map((c) => c.usuario_id))
+      .eq("escalas.ministerio_id", ministerioId);
 
     (historico ?? []).forEach((h: any) => {
       const atual = ultimaEscalaPorUsuario.get(h.usuario_id);

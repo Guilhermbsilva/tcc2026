@@ -47,6 +47,12 @@ async function onSubmit(data: SignUpFormSchema) {
     return;
   }
 
+    const mudarTelaAposTempo = () => {
+    setTimeout(() => {
+      router.push('/login');
+    }, 3000); // espera 2 segundos e vai pra tela de login
+  };
+
   const { error: insertError } = await supabase
     .from("usuario")
     .insert([
@@ -54,7 +60,6 @@ async function onSubmit(data: SignUpFormSchema) {
         nome: data.name,
         email: data.email,
         cargo: "usuario",
-        funcao_solicitada: data.funcaoSolicitada,
       },
     ]);
 
@@ -65,8 +70,8 @@ async function onSubmit(data: SignUpFormSchema) {
   }
 
   setCadastroSucesso(true);
-  router.push("/login")
 
+  mudarTelaAposTempo()
 }
 
     return(
@@ -108,18 +113,6 @@ async function onSubmit(data: SignUpFormSchema) {
         
             </div>
 
-            <div>
-                <h2>Sua função</h2>
-            <Input placeholder="(ex: guitarrista, cantor)" type="text" {...register("funcaoSolicitada")} />
-        
-                    {errors?.funcaoSolicitada && (
-                <div className="text-red-500 text-xs">
-                    {errors?.funcaoSolicitada?.message}
-                </div>
-                    )}
-        
-            </div>
-        
             <div>
                 <h2>Senha</h2>
             <Input placeholder="••••••••" type="password" {...register("password")} />

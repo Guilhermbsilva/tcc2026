@@ -6,9 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { vincularMinisterioSchema, VincularMinisterioSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import imagemFundo from "@/components/ui/IMG_6545.jpg"
-import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
-import "./atribuir-ministerio.css"
+import styles from "./atribuir-ministerio.module.css";
 
 type Usuario = { id: string; nome: string };
 type Ministerio = { id: string; ministerio: string };
@@ -89,24 +87,20 @@ export default function AtribuirMinisterio() {
     await carregarVinculos();
   }
 
-async function remover(id: string) {
-  console.log("tentando remover id:", id, typeof id);
+  async function remover(id: string) {
+    const { error } = await supabase
+      .from("usuario_ministerio")
+      .delete()
+      .eq("id", id)
+      .select();
 
-  const { data, error, count } = await supabase
-    .from("usuario_ministerio")
-    .delete()
-    .eq("id", id)
-    .select(); 
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-  console.log("resultado:", { data, error });
-
-  if (error) {
-    console.error(error);
-    return;
+    await carregarVinculos();
   }
-
-  await carregarVinculos();
-}
 
   const vinculosFiltrados = vinculos.filter((v) =>
     v.usuario?.nome?.toLowerCase().includes(busca.toLowerCase())
@@ -124,88 +118,75 @@ async function remover(id: string) {
   ).sort((a, b) => a[0].localeCompare(b[0]));
 
   return (
-<>
-       <header>
-            <div className="logoministry"><img src={imagemMinistry.src}/></div>
-            <a href="/cultos">Cultos</a>
-            <a href="/gerar-escala">Escala</a>
-            <a href="/ministerios">Ministério</a>
-            <a href="/modelos-culto">Modelos</a>
-            <a href="/vagas-culto">Vagas</a>
-            <a href="/disponibilidade">Disponivel</a>
-            <a href="/inicio">Tabelas</a>
-          </header>
-    
-    <div className="forms">
-      <p className="titulo">Atribuir Ministério</p>
+    <div className={styles.pagina}>
+      <div className={styles.forms}>
+        <p className={styles.titulo}>Atribuir Ministério</p>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <select {...register("usuario_id")}>
+              <option value="">Selecione o usuário</option>
+              {usuarios.map((u) => (
+                <option key={u.id} value={u.id}>{u.nome}</option>
+              ))}
+            </select>
+            {errors?.usuario_id && <span>{errors.usuario_id.message}</span>}
+          </div>
+
+          <div>
+            <select {...register("ministerio_id")}>
+              <option value="">Selecione o ministério</option>
+              {ministerios.map((m) => (
+                <option key={m.id} value={m.id}>{m.ministerio}</option>
+              ))}
+            </select>
+            {errors?.ministerio_id && <span>{errors.ministerio_id.message}</span>}
+          </div>
+
+          <div>
+            <input type="text" placeholder="Função (ex: guitarrista, cantor)" {...register("funcao")} />
+            {errors?.funcao && <span>{errors.funcao.message}</span>}
+          </div>
+
+          <button className={styles.botaoPrincipal} type="submit">Atribuir</button>
+        </form>
+
+        {mensagem && <p>{mensagem}</p>}
+
         <div>
-          <select {...register("usuario_id")}>
-            <option value="">Selecione o usuário</option>
-            {usuarios.map((u) => (
-              <option key={u.id} value={u.id}>{u.nome}</option>
-            ))}
-          </select>
-          {errors?.usuario_id && <span>{errors.usuario_id.message}</span>}
+          <h3 className={styles.subtitulo}>Atribuições</h3>
+
+          <input
+            type="text"
+            placeholder="Buscar por nome..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
+
+          {grupos.length === 0 ? (
+            <p>Nenhuma atribuição encontrada.</p>
+          ) : (
+            grupos.map(([nomeMinisterio, itens]) => (
+              <details key={nomeMinisterio} open style={{ marginTop: 12 }}>
+                <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: 16, padding: "8px 0" }}>
+                  {nomeMinisterio} ({itens.length})
+                </summary>
+
+                <ul>
+                  {itens.map((v) => (
+                    <li key={v.id} className={styles.listaCulto}>
+                      {v.usuario?.nome} — {v.funcao}
+                      <Button type="button" variant="destructive" onClick={() => remover(v.id)}>
+                        Remover
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))
+          )}
         </div>
-
-        <div>
-          <select {...register("ministerio_id")}>
-            <option value="">Selecione o ministério</option>
-            {ministerios.map((m) => (
-              <option key={m.id} value={m.id}>{m.ministerio}</option>
-            ))}
-          </select>
-          {errors?.ministerio_id && <span>{errors.ministerio_id.message}</span>}
-        </div>
-
-        <div>
-          <h2>Função:</h2>
-          <input type="text" placeholder="(ex: guitarrista, cantor)" {...register("funcao")} />
-          {errors?.funcao && <span>{errors.funcao.message}</span>}
-        </div>
-
-        <Button type="submit">Atribuir</Button>
-      </form>
-
-      {mensagem && <p>{mensagem}</p>}
-
-      <div className="cultos-criados">
-        <h2 className="culto-cad">Atribuições:</h2>
-
-        <input
-          type="text"
-          placeholder="Buscar por nome..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          style={{ marginBottom: 16, width: "100%" }}
-        />
-
-        {grupos.length === 0 ? (
-          <p>Nenhuma atribuição encontrada.</p>
-        ) : (
-          grupos.map(([nomeMinisterio, itens]) => (
-            <details key={nomeMinisterio} open style={{ marginBottom: 12 }}>
-              <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: 16, padding: "8px 0" }}>
-                {nomeMinisterio} ({itens.length})
-              </summary>
-
-              <ul className="lista-c">
-                {itens.map((v) => (
-                  <li key={v.id} className="lista-culto">
-                    {v.usuario?.nome} — {v.funcao}
-                    <Button type="button" variant="destructive" onClick={() => remover(v.id)}>
-                      Remover
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          ))
-        )}
       </div>
     </div>
-    </>
   );
-}
+} 

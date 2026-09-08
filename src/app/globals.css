@@ -130,3 +130,16 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+:root {
+  --cor-primaria: #132858;
+  --cor-fundo-card: #ffffff;
+  --cor-borda: #d1d5db;
+  --cor-botao-bg: #111111;
+  --cor-botao-texto: #ffffff;
+  --cor-erro: #ef4444;
+  --cor-sucesso: #22c55e;
+  --raio-borda: 6px;
+  --raio-card: 8px;
+  --espaco-padrao: 16px;
+}

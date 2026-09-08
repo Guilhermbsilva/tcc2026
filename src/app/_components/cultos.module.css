@@ -1,0 +1,168 @@
+.pagina {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-image: url('/IMG_7461.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 60px 40px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.cardCriar {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cardCultos {
+  width: 360px;
+  max-height: 560px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cor-primaria) transparent;
+}
+
+.cardCultos::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cardCultos::-webkit-scrollbar-thumb {
+  background-color: var(--cor-primaria);
+  border-radius: 6px;
+}
+
+.titulo {
+  color: var(--cor-primaria);
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.cardCriar form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardCriar input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--cor-primaria);
+}
+
+.cardCriar input::placeholder {
+  color: #9ca3af;
+}
+
+.botaoPrincipal {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  background-color: var(--cor-primaria);
+  cursor: pointer;
+  font-size: 15px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.botaoPrincipal:hover {
+  opacity: 0.85;
+}
+
+.listaC {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.listaCulto {
+  background-color: var(--cor-primaria);
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.linhaTopo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dataCulto {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.descricaoCulto {
+  flex: 1;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.btnRemover {
+  width: auto;
+  height: auto;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 16px;
+  opacity: 0.85;
+  margin-left: auto;
+}
+
+.btnRemover:hover {
+  opacity: 1;
+}
+
+.vazio {
+  color: var(--cor-primaria);
+}
+
+.grupoMes {
+  margin-bottom: 12px;
+}
+
+.mesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px 0;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  border-bottom: 1px solid #e5e7eb;
+}

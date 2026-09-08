@@ -38,9 +38,7 @@ export default function AuthGuard({ children, adminOnly = false }: AuthGuardProp
         }
       }
 
-      // chegou até aqui = tem permissão pra estar nessa página, então guarda como "última página válida"
       sessionStorage.setItem("ultima_pagina_permitida", window.location.pathname);
-
       setAutorizado(true);
       setCarregando(false);
     }

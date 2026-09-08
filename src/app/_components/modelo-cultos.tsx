@@ -6,9 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { modeloCultoSchema, ModeloCultoSchema, funcaoTemplateSchema, FuncaoTemplateSchema } from "../_schemas/auth-schemas";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
-import "./modelo-cultos.css"
-import imagemFundo from "@/components/ui/IMG_6545.jpg"
-import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png"
+import styles from "./modelo-cultos.module.css";
 
 type Modelo = { id: string; nome: string; ministerio_id: string };
 type Ministerio = { id: string; ministerio: string };
@@ -113,89 +111,76 @@ export default function GerenciarTemplates() {
     : modelos;
 
   return (
-      <>
+    <div className={styles.pagina}>
+      <div className={styles.forms}>
+        <p className={styles.titulo}>Templates de culto</p>
 
-      <header>
-        <div className="logoministry"><img src={imagemMinistry.src}/></div>
-        <a href="/atribuir-ministerio">Atribuir</a>
-          <a href="/cultos">Cultos</a>
-        <a href="/gerar-escala">Escala</a>
-        <a href="/ministerios">Ministério</a>
-        <a href="/vagas-culto">Vagas</a>
-        <a href="/disponibilidade">Disponivel</a>
-        <a href="/inicio">Tabela</a>
-      </header>
+        <form onSubmit={formModelo.handleSubmit(criarModelo)}>
+          <input type="text" placeholder="Nome do template (ex: Domingo Manhã)" {...formModelo.register("nome")} />
+          {formModelo.formState.errors.nome && <span>{formModelo.formState.errors.nome.message}</span>}
 
-   
-    <div className="forms">
-      <p className="titulo">Templates de culto</p>
+          <select {...formModelo.register("ministerio_id")}>
+            <option value="">Selecione o ministério</option>
+            {ministerios.map((m) => (
+              <option key={m.id} value={m.id}>{m.ministerio}</option>
+            ))}
+          </select>
+          {formModelo.formState.errors.ministerio_id && <span>{formModelo.formState.errors.ministerio_id.message}</span>}
 
-      <form onSubmit={formModelo.handleSubmit(criarModelo)}>
-        <input type="text" placeholder="Nome do template (ex: Domingo Manhã)" {...formModelo.register("nome")} />
-        {formModelo.formState.errors.nome && <span>{formModelo.formState.errors.nome.message}</span>}
+          <button className={styles.botaoPrincipal} type="submit">Criar template</button>
+        </form>
 
-        <select {...formModelo.register("ministerio_id")}>
-          <option value="">Selecione o ministério</option>
-          {ministerios.map((m) => (
-            <option key={m.id} value={m.id}>{m.ministerio}</option>
-          ))}
-        </select>
-        {formModelo.formState.errors.ministerio_id && <span>{formModelo.formState.errors.ministerio_id.message}</span>}
-
-        <Button className="botao-principal" type="submit">Criar template</Button>
-      </form>
-
-      <div>
-        <h3>Templates existentes</h3>
-
-        <select value={ministerioFiltro} onChange={(e) => setMinisterioFiltro(e.target.value)}>
-          <option value="">Todos os ministérios</option>
-          {ministerios.map((m) => (
-            <option key={m.id} value={m.id}>{m.ministerio}</option>
-          ))}
-        </select>
-
-        <ul className="lista-c">
-          {modelosFiltrados.map((m) => (
-            <li key={m.id} className="lista-culto">
-              <span
-                onClick={() => setModeloSelecionado(m.id)}
-                style={{ cursor: "pointer", fontWeight: modeloSelecionado === m.id ? 700 : 400 }}
-              >
-                {m.nome} — {nomeMinisterio(m.ministerio_id)}
-                {modeloSelecionado === m.id && " (selecionado)"}
-              </span>
-              <Button type="button" variant="destructive" onClick={() => removerModelo(m.id)}>
-                Remover
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {modeloSelecionado && (
         <div>
-          <h3>Funções do template</h3>
+          <h3 className={styles.subtitulo}>Templates existentes</h3>
 
-          <form onSubmit={formFuncao.handleSubmit(adicionarFuncao)}>
-            <input type="text" placeholder="Função (ex: guitarrista)" {...formFuncao.register("funcao")} />
-            <input type="number" placeholder="Quantidade" {...formFuncao.register("quantidade", { valueAsNumber: true })} />
-            <Button className="botao-principal" type="submit">Adicionar</Button>
-          </form>
+          <select value={ministerioFiltro} onChange={(e) => setMinisterioFiltro(e.target.value)}>
+            <option value="">Todos os ministérios</option>
+            {ministerios.map((m) => (
+              <option key={m.id} value={m.id}>{m.ministerio}</option>
+            ))}
+          </select>
 
-          <ul className="lista-c">
-            {funcoes.map((f) => (
-              <li key={f.id} className="lista-culto">
-                <span>{f.funcao} — {f.quantidade} vaga(s)</span>
-                <Button type="button" variant="destructive" onClick={() => removerFuncao(f.id)}>
+          <ul>
+            {modelosFiltrados.map((m) => (
+              <li key={m.id} className={styles.listaCulto}>
+                <span
+                  onClick={() => setModeloSelecionado(m.id)}
+                  style={{ cursor: "pointer", fontWeight: modeloSelecionado === m.id ? 700 : 400 }}
+                >
+                  {m.nome} — {nomeMinisterio(m.ministerio_id)}
+                  {modeloSelecionado === m.id && " (selecionado)"}
+                </span>
+                <Button type="button" variant="destructive" onClick={() => removerModelo(m.id)}>
                   Remover
                 </Button>
               </li>
             ))}
           </ul>
         </div>
-      )}
+
+        {modeloSelecionado && (
+          <div>
+            <h3 className={styles.subtitulo}>Funções do template</h3>
+
+            <form onSubmit={formFuncao.handleSubmit(adicionarFuncao)}>
+              <input type="text" placeholder="Função (ex: guitarrista)" {...formFuncao.register("funcao")} />
+              <input type="number" placeholder="Quantidade" {...formFuncao.register("quantidade", { valueAsNumber: true })} />
+              <button className={styles.botaoPrincipal} type="submit">Adicionar</button>
+            </form>
+
+            <ul>
+              {funcoes.map((f) => (
+                <li key={f.id} className={styles.listaCulto}>
+                  <span>{f.funcao} — {f.quantidade} vaga(s)</span>
+                  <Button type="button" variant="destructive" onClick={() => removerFuncao(f.id)}>
+                    Remover
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
-    </>
   );
 }

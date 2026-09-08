@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
-import "./disponibilidade.module.css"
-
 import styles from "./disponibilidade.module.css";
 import imagemMinistry from "../../components/ui/IMG_6960-removebg-preview.png";
 
@@ -14,19 +12,18 @@ type Culto = {
   descricao: string | null;
 };
 
-type Ministerio = {
-  id: string;
-  ministerio: string;
-};
+const MESES = [
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+];
 
-// chave única = `${cultoId}-${ministerioId}`
 export default function Disponibilidade() {
   const [cultos, setCultos] = useState<Culto[]>([]);
-  const [ministerios, setMinisterios] = useState<Ministerio[]>([]);
   const [selecionados, setSelecionados] = useState<Set<string>>(new Set());
   const [usuarioId, setUsuarioId] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [mensagem, setMensagem] = useState<string | null>(null);
+  const [mesesAbertos, setMesesAbertos] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     carregarDados();
@@ -56,40 +53,63 @@ export default function Disponibilidade() {
 
     setCultos(cultosData ?? []);
 
-    const { data: ministeriosDoUsuario } = await supabase
-      .from("usuario_ministerio")
-      .select("ministerio_id, ministerios(id, ministerio)")
-      .eq("usuario_id", usuario.id);
-
-    const ministeriosFormatados = (ministeriosDoUsuario ?? []).map((m: any) => ({
-      id: m.ministerios.id,
-      ministerio: m.ministerios.ministerio,
-    }));
-
-    setMinisterios(ministeriosFormatados);
-
     const { data: disponibilidadesExistentes } = await supabase
       .from("disponibilidades")
-      .select("culto_id, ministerio_id")
+      .select("culto_id")
       .eq("usuario_id", usuario.id);
 
     const jaMarcados = new Set(
-      (disponibilidadesExistentes ?? []).map((d) => `${d.culto_id}-${d.ministerio_id}`)
+      (disponibilidadesExistentes ?? []).map((d) => d.culto_id)
     );
-
     setSelecionados(jaMarcados);
+
+    // abre automaticamente o primeiro mês que tiver cultos
+    if (cultosData && cultosData.length > 0) {
+      const primeiraChave = chaveMes(cultosData[0].dia);
+      setMesesAbertos(new Set([primeiraChave]));
+    }
+
     setCarregando(false);
   }
 
-  function alternar(cultoId: string, ministerioId: string) {
-    const chave = `${cultoId}-${ministerioId}`;
+  function chaveMes(dia: string) {
+    const d = new Date(dia + "T00:00:00");
+    return `${d.getFullYear()}-${d.getMonth()}`;
+  }
+
+  function nomeMes(chave: string) {
+    const [ano, mes] = chave.split("-").map(Number);
+    return `${MESES[mes]} ${ano}`;
+  }
+
+  function alternar(cultoId: string) {
     setSelecionados((prev) => {
       const novo = new Set(prev);
-      if (novo.has(chave)) {
-        novo.delete(chave);
+      if (novo.has(cultoId)) {
+        novo.delete(cultoId);
       } else {
-        novo.add(chave);
+        novo.add(cultoId);
       }
+      return novo;
+    });
+  }
+
+  function alternarMesAberto(chave: string) {
+    setMesesAbertos((prev) => {
+      const novo = new Set(prev);
+      if (novo.has(chave)) novo.delete(chave);
+      else novo.add(chave);
+      return novo;
+    });
+  }
+
+  function selecionarTodosDoMes(cultosDoMes: Culto[], marcarTudo: boolean) {
+    setSelecionados((prev) => {
+      const novo = new Set(prev);
+      cultosDoMes.forEach((c) => {
+        if (marcarTudo) novo.add(c.id);
+        else novo.delete(c.id);
+      });
       return novo;
     });
   }
@@ -99,7 +119,6 @@ export default function Disponibilidade() {
 
     setMensagem(null);
 
-    // remove tudo que esse usuário tinha marcado antes
     const { error: deleteError } = await supabase
       .from("disponibilidades")
       .delete()
@@ -111,15 +130,10 @@ export default function Disponibilidade() {
       return;
     }
 
-    // insere as novas marcações
-    const registros = Array.from(selecionados).map((chave) => {
-      const [cultoId, ministerioId] = chave.split("-");
-      return {
-        usuario_id: usuarioId,
-        culto_id: cultoId,
-        ministerio_id: ministerioId,
-      };
-    });
+    const registros = Array.from(selecionados).map((cultoId) => ({
+      usuario_id: usuarioId,
+      culto_id: cultoId,
+    }));
 
     if (registros.length > 0) {
       const { error: insertError } = await supabase
@@ -138,61 +152,80 @@ export default function Disponibilidade() {
 
   if (carregando) return <p>Carregando...</p>;
 
-
+  // agrupa os cultos por mês
+  const grupos = new Map<string, Culto[]>();
+  cultos.forEach((c) => {
+    const chave = chaveMes(c.dia);
+    if (!grupos.has(chave)) grupos.set(chave, []);
+    grupos.get(chave)!.push(c);
+  });
 
   return (
-    <div className={styles.pagina}>
-      <header className={styles.header}>
-        <div className={styles.logoministry}><img src={imagemMinistry.src} /></div>
-        <a href="/atribuir-ministerio">Atribuir</a>
-        <a href="/cultos">Cultos</a>
-        <a href="/gerar-escala">Escala</a>
-        <a href="/ministerios">Ministério</a>
-        <a href="/modelos-culto">Modelos</a>
-        <a href="/vagas-culto">Vagas</a>
-        <a href="/inicio">Tabela</a>
-      </header>
-
+  <div className={styles.pagina}>
       <div className={styles.forms}>
-        <p className={styles.titulo}>Minha disponibilidade</p>
+        <div className={styles.topo}>
+          <p className={styles.titulo}>Minha disponibilidade</p>
+          {cultos.length > 0 && (
+            <p className={styles.contador}>
+              {selecionados.size} de {cultos.length} selecionados
+            </p>
+          )}
+        </div>
 
-        {ministerios.length === 0 ? (
-          <p>Você ainda não está vinculado a nenhum ministério.</p>
-        ) : (
-          ministerios.map((ministerio) => (
-            <div key={ministerio.id}>
-              <h3>{ministerio.ministerio}</h3>
+        <div className={styles.listaScroll}>
+          {cultos.length === 0 ? (
+            <p>Nenhum culto cadastrado ainda.</p>
+          ) : (
+            Array.from(grupos.entries()).map(([chave, cultosDoMes]) => {
+              const todosMarcados = cultosDoMes.every((c) => selecionados.has(c.id));
+              const aberto = mesesAbertos.has(chave);
 
-              {cultos.length === 0 ? (
-                <p>Nenhum culto cadastrado ainda.</p>
-              ) : (
-                <ul>
-                  {cultos.map((culto) => {
-                    const chave = `${culto.id}-${ministerio.id}`;
-                    return (
-                      <li key={chave} className={styles.listaCulto}>
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={selecionados.has(chave)}
-                            onChange={() => alternar(culto.id, ministerio.id)}
-                          />
-                          {new Date(culto.dia + "T00:00:00").toLocaleDateString("pt-BR")}
-                          {culto.descricao && ` — ${culto.descricao}`}
-                        </label>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          ))
-        )}
+              return (
+                <div key={chave} className={styles.grupoMes}>
+                  <div className={styles.mesHeader} onClick={() => alternarMesAberto(chave)}>
+                    <span>{nomeMes(chave)} {aberto ? "▾" : "▸"}</span>
+                    <span
+                      className={styles.selecionarTodos}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        selecionarTodosDoMes(cultosDoMes, !todosMarcados);
+                      }}
+                    >
+                      {todosMarcados ? "Desmarcar todos" : "Selecionar todos"}
+                    </span>
+                  </div>
 
-        <Button onClick={salvar}>Salvar disponibilidade</Button>
+                  {aberto && (
+                    <div className={styles.gridCultos}>
+                      {cultosDoMes.map((culto) => (
+                        <div
+                          key={culto.id}
+                          className={`${styles.itemCulto} ${selecionados.has(culto.id) ? styles.itemCultoMarcado : ""}`}
+                        >
+                          <label>
+                            <input
+                              type="checkbox"
+                              checked={selecionados.has(culto.id)}
+                              onChange={() => alternar(culto.id)}
+                            />
+                            {new Date(culto.dia + "T00:00:00").toLocaleDateString("pt-BR")}
+                            {culto.descricao && ` — ${culto.descricao}`}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
 
-        {mensagem && <p>{mensagem}</p>}
+        <div className={styles.rodape}>
+          <Button onClick={salvar}>Salvar disponibilidade</Button>
+          {mensagem && <p>{mensagem}</p>}
+        </div>
       </div>
-    </div>
+      </div>
   );
 }
