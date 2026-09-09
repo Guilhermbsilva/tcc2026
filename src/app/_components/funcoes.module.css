@@ -32,16 +32,13 @@
   width: 300px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 
 .cardLista {
-  width: 380px;
+  width: 360px;
   max-height: 560px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
 
 .titulo {
@@ -50,19 +47,6 @@
   font-weight: 700;
   text-align: center;
   margin-bottom: 8px;
-}
-
-.subtitulo {
-  color: var(--cor-primaria);
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.cardCriar form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 .cardCriar input,
@@ -74,6 +58,12 @@
   border-radius: 8px;
   font-size: 14px;
   color: var(--cor-primaria);
+}
+
+.cardCriar form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .botaoPrincipal {
@@ -93,6 +83,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 8px;
 }
 
 .listaCulto {
@@ -106,10 +97,6 @@
   gap: 10px;
 }
 
-.listaCulto span {
-  cursor: pointer;
-}
-
 .listaCulto button {
   width: auto;
   height: auto;
@@ -117,14 +104,6 @@
   font-size: 13px;
 }
 
-.blocoFuncoes {
-  border-top: 1px solid #e5e7eb;
-  padding-top: 16px;
-}
-
-.blocoFuncoes form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 12px;
+.vazio {
+  color: var(--cor-primaria);
 }

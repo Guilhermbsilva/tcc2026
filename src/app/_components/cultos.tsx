@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import styles from "./cultos.module.css";
+import Spinner from "./spinner";
 
 type Culto = {
   id: number;
@@ -31,8 +32,10 @@ function nomeMes(chave: string) {
 export default function Cultos() {
   const [cultos, setCultos] = useState<Culto[]>([]);
   const [mesesAbertos, setMesesAbertos] = useState<Set<string>>(new Set());
+  const [salvando, setSalvando] = useState(false);
+  const [removendoId, setRemovendoId] = useState<number | null>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<cultoSchema>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<cultoSchema>({
     resolver: zodResolver(cultoSchema),
   });
 
@@ -58,31 +61,40 @@ export default function Cultos() {
   }
 
   async function onSubmit(data: cultoSchema) {
+    setSalvando(true);
+
     const { error: insertError } = await supabase
       .from("cultos")
       .insert([{ dia: data.dia, descricao: data.descricao || null }]);
 
     if (insertError) {
       console.error(insertError);
+      setSalvando(false);
       return;
     }
 
+    reset();
     await carregarCultos();
+    setSalvando(false);
   }
 
   async function removerCulto(id: number) {
     const confirmar = window.confirm("Tem certeza que deseja remover este culto? Isso também vai apagar vagas, disponibilidades e escalas ligadas a ele.");
     if (!confirmar) return;
 
+    setRemovendoId(id);
+
     const { error } = await supabase.from("cultos").delete().eq("id", id);
 
     if (error) {
       console.error(error);
       alert("Erro ao remover culto. Verifique o console.");
+      setRemovendoId(null);
       return;
     }
 
     await carregarCultos();
+    setRemovendoId(null);
   }
 
   function alternarMesAberto(chave: string) {
@@ -112,16 +124,18 @@ export default function Cultos() {
           <p className={styles.titulo}>Criar Cultos</p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <input type="date" {...register("dia")} />
+              <input type="date" {...register("dia")} disabled={salvando} />
               {errors?.dia && <span>{errors.dia.message}</span>}
             </div>
 
             <div>
-              <input type="text" placeholder="Descrição (opcional)" {...register("descricao")} />
+              <input type="text" placeholder="Descrição (opcional)" {...register("descricao")} disabled={salvando} />
               {errors?.descricao && <span>{errors.descricao.message}</span>}
             </div>
 
-            <button className={styles.botaoPrincipal} type="submit">Criar</button>
+            <button className={styles.botaoPrincipal} type="submit" disabled={salvando}>
+              {salvando ? (<><Spinner /> Criando...</>) : "Criar"}
+            </button>
           </form>
         </div>
 
@@ -153,8 +167,9 @@ export default function Cultos() {
                               className={styles.btnRemover}
                               onClick={() => removerCulto(culto.id)}
                               aria-label="Remover culto"
+                              disabled={removendoId === culto.id}
                             >
-                              ✕
+                              {removendoId === culto.id ? <Spinner /> : "✕"}
                             </button>
                           </div>
                           {culto.descricao && (

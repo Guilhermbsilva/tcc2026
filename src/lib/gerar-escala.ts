@@ -23,12 +23,11 @@ const { data: vagas } = await supabase
 
   if (!vagas || vagas.length === 0) throw new Error("Nenhuma vaga definida para este culto");
 
-  // 3. disponíveis nesse culto+ministério, com a função de cada um
+  // 3. disponíveis nesse culto
   const { data: disponibilidades } = await supabase
     .from("disponibilidades")
     .select("usuario_id")
-    .eq("culto_id", cultoId)
-    .eq("ministerio_id", ministerioId);
+    .eq("culto_id", cultoId);
 
   const idsDisponiveis = (disponibilidades ?? []).map((d) => d.usuario_id);
 

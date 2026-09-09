@@ -63,3 +63,10 @@ export const ministerioSchema = z.object({
 });
 
 export type MinisterioSchema = z.infer<typeof ministerioSchema>;
+
+export const funcaoCadastroSchema = z.object({
+  nome: z.string().min(1, { message: "informe o nome da função" }).max(255),
+  ministerio_id: z.string().min(1, { message: "selecione um ministério" }),
+});
+
+export type FuncaoCadastroSchema = z.infer<typeof funcaoCadastroSchema>;

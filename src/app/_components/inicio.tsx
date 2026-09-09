@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import styles from "./inicio.module.css";
 
-type Colega = { usuario_id: string; nome: string };
+type Colega = { usuario_id: string; nome: string; funcao: string };
 
 type CardEscala = {
   escalaId: string;
@@ -19,6 +19,7 @@ const CORES = ["#18181b", "#ef4444", "#0ea5e9", "#22c55e", "#eab308", "#a855f7"]
 export default function Inicio() {
   const [cards, setCards] = useState<CardEscala[]>([]);
   const [carregando, setCarregando] = useState(true);
+  const [cardSelecionado, setCardSelecionado] = useState<CardEscala | null>(null);
 
   useEffect(() => {
     carregar();
@@ -36,7 +37,6 @@ export default function Inicio() {
 
     if (!usuario) return;
 
-    // escalas em que EU estou
     const { data: minhasEscalas } = await supabase
       .from("escala_usuario")
       .select("escala_id, escalas(id, culto_id, ministerio_id, cultos(dia, descricao), ministerios(ministerio))")
@@ -53,15 +53,15 @@ export default function Inicio() {
       const escala = item.escalas;
       if (!escala) continue;
 
-      // busca todo mundo que está nessa mesma escala (a equipe)
       const { data: equipeData } = await supabase
         .from("escala_usuario")
-        .select("usuario_id, usuario(nome)")
+        .select("usuario_id, funcao, usuario(nome)")
         .eq("escala_id", escala.id);
 
       const equipe: Colega[] = (equipeData ?? []).map((e: any) => ({
         usuario_id: e.usuario_id,
         nome: e.usuario?.nome ?? "?",
+        funcao: e.funcao ?? "",
       }));
 
       cardsMontados.push({
@@ -73,10 +73,12 @@ export default function Inicio() {
       });
     }
 
-    // ordena pela data do culto
-    cardsMontados.sort((a, b) => a.cultoDia.localeCompare(b.cultoDia));
+    const hoje = new Date().toISOString().split("T")[0];
+    const cardsFuturos = cardsMontados.filter((c) => c.cultoDia >= hoje);
 
-    setCards(cardsMontados);
+    cardsFuturos.sort((a, b) => a.cultoDia.localeCompare(b.cultoDia));
+
+    setCards(cardsFuturos);
     setCarregando(false);
   }
 
@@ -87,11 +89,15 @@ export default function Inicio() {
       <h1 className={styles.tituloPagina}>Minhas escalas</h1>
 
       {cards.length === 0 ? (
-        <p>Você ainda não está escalado em nenhum culto.</p>
+        <p>Você não tem escalas futuras no momento.</p>
       ) : (
         <div className={styles.grid}>
           {cards.map((card) => (
-            <div key={card.escalaId} className={styles.card}>
+            <div
+              key={card.escalaId}
+              className={styles.card}
+              onClick={() => setCardSelecionado(card)}
+            >
               <p className={styles.cardTitulo}>
                 {card.cultoDescricao ?? "Culto"}
               </p>
@@ -114,6 +120,39 @@ export default function Inicio() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {cardSelecionado && (
+        <div className={styles.overlay} onClick={() => setCardSelecionado(null)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.fechar} onClick={() => setCardSelecionado(null)}>
+              ✕
+            </button>
+
+            <p className={styles.modalTitulo}>
+              {cardSelecionado.cultoDescricao ?? "Culto"}
+            </p>
+            <p className={styles.modalData}>
+              {new Date(cardSelecionado.cultoDia + "T00:00:00").toLocaleDateString("pt-BR")}
+            </p>
+            <p className={styles.modalMinisterio}>{cardSelecionado.ministerio}</p>
+
+            <ul className={styles.listaEquipe}>
+              {cardSelecionado.equipe.map((colega, i) => (
+                <li key={colega.usuario_id} className={styles.itemEquipe}>
+                  <div
+                    className={styles.avatarPequeno}
+                    style={{ backgroundColor: CORES[i % CORES.length] }}
+                  >
+                    {colega.nome.charAt(0).toUpperCase()}
+                  </div>
+                  <span>{colega.nome}</span>
+                  <span className={styles.funcaoTag}>{colega.funcao}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>

@@ -7,6 +7,7 @@ import { vincularMinisterioSchema, VincularMinisterioSchema } from "../_schemas/
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import styles from "./atribuir-ministerio.module.css";
+import Spinner from "./spinner";
 
 type Usuario = { id: string; nome: string };
 type Ministerio = { id: string; ministerio: string };
@@ -23,6 +24,8 @@ export default function AtribuirMinisterio() {
   const [vinculos, setVinculos] = useState<Vinculo[]>([]);
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [busca, setBusca] = useState("");
+  const [salvando, setSalvando] = useState(false);
+  const [removendoId, setRemovendoId] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<VincularMinisterioSchema>({
     resolver: zodResolver(vincularMinisterioSchema),
@@ -65,6 +68,7 @@ export default function AtribuirMinisterio() {
 
   async function onSubmit(data: VincularMinisterioSchema) {
     setMensagem(null);
+    setSalvando(true);
 
     const { error } = await supabase
       .from("usuario_ministerio")
@@ -79,15 +83,19 @@ export default function AtribuirMinisterio() {
     if (error) {
       console.error(error);
       setMensagem("Erro ao vincular. Verifique se esse vínculo já existe.");
+      setSalvando(false);
       return;
     }
 
     setMensagem("Vínculo criado com sucesso!");
     reset();
     await carregarVinculos();
+    setSalvando(false);
   }
 
   async function remover(id: string) {
+    setRemovendoId(id);
+
     const { error } = await supabase
       .from("usuario_ministerio")
       .delete()
@@ -96,10 +104,12 @@ export default function AtribuirMinisterio() {
 
     if (error) {
       console.error(error);
+      setRemovendoId(null);
       return;
     }
 
     await carregarVinculos();
+    setRemovendoId(null);
   }
 
   const vinculosFiltrados = vinculos.filter((v) =>
@@ -119,42 +129,40 @@ export default function AtribuirMinisterio() {
 
   return (
     <div className={styles.pagina}>
-      <div className={styles.forms}>
-        <p className={styles.titulo}>Atribuir Ministério</p>
+      <div className={styles.conteudo}>
+        <div className={`${styles.card} ${styles.cardCriar}`}>
+          <p className={styles.titulo}>Atribuir Ministério</p>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <select {...register("usuario_id")}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <select {...register("usuario_id")} disabled={salvando}>
               <option value="">Selecione o usuário</option>
               {usuarios.map((u) => (
                 <option key={u.id} value={u.id}>{u.nome}</option>
               ))}
             </select>
             {errors?.usuario_id && <span>{errors.usuario_id.message}</span>}
-          </div>
 
-          <div>
-            <select {...register("ministerio_id")}>
+            <select {...register("ministerio_id")} disabled={salvando}>
               <option value="">Selecione o ministério</option>
               {ministerios.map((m) => (
                 <option key={m.id} value={m.id}>{m.ministerio}</option>
               ))}
             </select>
             {errors?.ministerio_id && <span>{errors.ministerio_id.message}</span>}
-          </div>
 
-          <div>
-            <input type="text" placeholder="Função (ex: guitarrista, cantor)" {...register("funcao")} />
+            <input type="text" placeholder="Função (ex: guitarrista, cantor)" {...register("funcao")} disabled={salvando} />
             {errors?.funcao && <span>{errors.funcao.message}</span>}
-          </div>
 
-          <button className={styles.botaoPrincipal} type="submit">Atribuir</button>
-        </form>
+            <button className={styles.botaoPrincipal} type="submit" disabled={salvando}>
+              {salvando ? (<><Spinner /> Atribuindo...</>) : "Atribuir"}
+            </button>
+          </form>
 
-        {mensagem && <p>{mensagem}</p>}
+          {mensagem && <p>{mensagem}</p>}
+        </div>
 
-        <div>
-          <h3 className={styles.subtitulo}>Atribuições</h3>
+        <div className={`${styles.card} ${styles.cardLista}`}>
+          <p className={styles.titulo}>Atribuições</p>
 
           <input
             type="text"
@@ -167,17 +175,20 @@ export default function AtribuirMinisterio() {
             <p>Nenhuma atribuição encontrada.</p>
           ) : (
             grupos.map(([nomeMinisterio, itens]) => (
-              <details key={nomeMinisterio} open style={{ marginTop: 12 }}>
-                <summary style={{ cursor: "pointer", fontWeight: 700, fontSize: 16, padding: "8px 0" }}>
-                  {nomeMinisterio} ({itens.length})
-                </summary>
+              <details key={nomeMinisterio} open className={styles.grupoDetails}>
+                <summary>{nomeMinisterio} ({itens.length})</summary>
 
-                <ul>
+                <ul className={styles.listaC}>
                   {itens.map((v) => (
                     <li key={v.id} className={styles.listaCulto}>
-                      {v.usuario?.nome} — {v.funcao}
-                      <Button type="button" variant="destructive" onClick={() => remover(v.id)}>
-                        Remover
+                      <span>{v.usuario?.nome} — {v.funcao}</span>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={() => remover(v.id)}
+                        disabled={removendoId === v.id}
+                      >
+                        {removendoId === v.id ? <Spinner /> : "Remover"}
                       </Button>
                     </li>
                   ))}
@@ -189,4 +200,4 @@ export default function AtribuirMinisterio() {
       </div>
     </div>
   );
-} 
+}

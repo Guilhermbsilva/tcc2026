@@ -7,6 +7,7 @@ import { funcaoTemplateSchema, FuncaoTemplateSchema } from "../_schemas/auth-sch
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import styles from "./vagas-culto.module.css";
+import Spinner from "./spinner";
 
 type Culto = { id: string; dia: string; descricao: string | null };
 type Modelo = { id: string; nome: string; ministerio_id: string };
@@ -21,6 +22,9 @@ export default function VagasCulto() {
   const [ministerioSelecionado, setMinisterioSelecionado] = useState<string>("");
   const [vagas, setVagas] = useState<VagaCulto[]>([]);
   const [mensagem, setMensagem] = useState<string | null>(null);
+  const [aplicandoTemplate, setAplicandoTemplate] = useState(false);
+  const [salvandoFuncao, setSalvandoFuncao] = useState(false);
+  const [removendoId, setRemovendoId] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FuncaoTemplateSchema>({
     resolver: zodResolver(funcaoTemplateSchema),
@@ -62,12 +66,17 @@ export default function VagasCulto() {
       return;
     }
 
+    setAplicandoTemplate(true);
+
     const { data: funcoesModelo } = await supabase
       .from("modelos_culto_funcao")
       .select("funcao, quantidade")
       .eq("modelo_culto_id", modeloId);
 
-    if (!funcoesModelo || funcoesModelo.length === 0) return;
+    if (!funcoesModelo || funcoesModelo.length === 0) {
+      setAplicandoTemplate(false);
+      return;
+    }
 
     const registros = funcoesModelo.map((f) => ({
       culto_id: cultoSelecionado,
@@ -81,11 +90,13 @@ export default function VagasCulto() {
     if (error) {
       console.error(error);
       setMensagem("Erro ao aplicar template (talvez já existam vagas com essas funções nesse culto/ministério).");
+      setAplicandoTemplate(false);
       return;
     }
 
     setMensagem("Template aplicado!");
     await carregarVagas(cultoSelecionado);
+    setAplicandoTemplate(false);
   }
 
   async function adicionarFuncaoManual(data: FuncaoTemplateSchema) {
@@ -95,6 +106,8 @@ export default function VagasCulto() {
       setMensagem("Selecione o ministério antes de adicionar a função.");
       return;
     }
+
+    setSalvandoFuncao(true);
 
     const { error } = await supabase
       .from("cultos_funcao")
@@ -108,17 +121,21 @@ export default function VagasCulto() {
     if (error) {
       console.error(error);
       setMensagem("Erro ao adicionar função.");
+      setSalvandoFuncao(false);
       return;
     }
 
     setMensagem(null);
     reset();
     await carregarVagas(cultoSelecionado);
+    setSalvandoFuncao(false);
   }
 
   async function removerVaga(id: string) {
+    setRemovendoId(id);
     await supabase.from("cultos_funcao").delete().eq("id", id);
     if (cultoSelecionado) await carregarVagas(cultoSelecionado);
+    setRemovendoId(null);
   }
 
   const vagasFiltradas = ministerioSelecionado
@@ -131,70 +148,91 @@ export default function VagasCulto() {
 
   return (
     <div className={styles.pagina}>
-      <div className={styles.forms}>
-        <p className={styles.titulo}>Vagas Disponíveis</p>
+      <div className={styles.conteudo}>
+        <div className={`${styles.card} ${styles.cardCriar}`}>
+          <p className={styles.titulo}>Vagas do Culto</p>
 
-        <select value={cultoSelecionado} onChange={(e) => setCultoSelecionado(e.target.value)}>
-          <option value="">Selecione o culto</option>
-          {cultos.map((c) => (
-            <option key={c.id} value={c.id}>
-              {new Date(c.dia + "T00:00:00").toLocaleDateString("pt-BR")}
-              {c.descricao && ` — ${c.descricao}`}
-            </option>
-          ))}
-        </select>
+          <select value={cultoSelecionado} onChange={(e) => setCultoSelecionado(e.target.value)}>
+            <option value="">Selecione o culto</option>
+            {cultos.map((c) => (
+              <option key={c.id} value={c.id}>
+                {new Date(c.dia + "T00:00:00").toLocaleDateString("pt-BR")}
+                {c.descricao && ` — ${c.descricao}`}
+              </option>
+            ))}
+          </select>
 
-        {cultoSelecionado && (
-          <>
-            <select value={ministerioSelecionado} onChange={(e) => setMinisterioSelecionado(e.target.value)}>
-              <option value="">Selecione o ministério</option>
-              {ministerios.map((m) => (
-                <option key={m.id} value={m.id}>{m.ministerio}</option>
-              ))}
-            </select>
+          {cultoSelecionado && (
+            <>
+              <select value={ministerioSelecionado} onChange={(e) => setMinisterioSelecionado(e.target.value)}>
+                <option value="">Selecione o ministério</option>
+                {ministerios.map((m) => (
+                  <option key={m.id} value={m.id}>{m.ministerio}</option>
+                ))}
+              </select>
 
-            {ministerioSelecionado && (
-              <>
-                <div>
-                  <label>Aplicar template: </label>
-                  <select onChange={(e) => e.target.value && aplicarTemplate(e.target.value)} defaultValue="">
-                    <option value="">Selecione...</option>
+              {ministerioSelecionado && (
+                <>
+                  <select
+                    onChange={(e) => e.target.value && aplicarTemplate(e.target.value)}
+                    defaultValue=""
+                    disabled={aplicandoTemplate}
+                  >
+                    <option value="">
+                      {aplicandoTemplate ? "Aplicando..." : "Aplicar template..."}
+                    </option>
                     {modelos
                       .filter((m) => String(m.ministerio_id) === String(ministerioSelecionado))
                       .map((m) => (
                         <option key={m.id} value={m.id}>{m.nome}</option>
                       ))}
                   </select>
-                </div>
 
-                <form onSubmit={handleSubmit(adicionarFuncaoManual)}>
-                  <input type="text" placeholder="Função (ex: guitarrista)" {...register("funcao")} />
-                  {errors?.funcao && <span>{errors.funcao.message}</span>}
-                  <input type="number" placeholder="Quantidade" {...register("quantidade", { valueAsNumber: true })} />
-                  <button className={styles.botaoPrincipal} type="submit">Adicionar função</button>
-                </form>
+                  <form onSubmit={handleSubmit(adicionarFuncaoManual)}>
+                    <input type="text" placeholder="Função (ex: guitarrista)" {...register("funcao")} disabled={salvandoFuncao} />
+                    {errors?.funcao && <span>{errors.funcao.message}</span>}
+                    <input type="number" placeholder="Quantidade" {...register("quantidade", { valueAsNumber: true })} disabled={salvandoFuncao} />
+                    <button className={styles.botaoPrincipal} type="submit" disabled={salvandoFuncao}>
+                      {salvandoFuncao ? (<><Spinner /> Adicionando...</>) : "Adicionar função"}
+                    </button>
+                  </form>
 
-                {mensagem && <p>{mensagem}</p>}
+                  {mensagem && <p>{mensagem}</p>}
+                </>
+              )}
+            </>
+          )}
+        </div>
 
-                <div>
-                  <h3 className={styles.subtitulo}>Vagas — {nomeMinisterio(ministerioSelecionado)}</h3>
-                  {vagasFiltradas.length === 0 ? (
-                    <p>Nenhuma vaga definida ainda para esse ministério.</p>
-                  ) : (
-                    <ul>
-                      {vagasFiltradas.map((v) => (
-                        <li key={v.id} className={styles.listaCulto}>
-                          {v.funcao} — {v.quantidade} vaga(s)
-                          <Button type="button" variant="destructive" onClick={() => removerVaga(v.id)}>Remover</Button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </>
-            )}
-          </>
-        )}
+        <div className={`${styles.card} ${styles.cardLista}`}>
+          <p className={styles.titulo}>
+            {ministerioSelecionado ? `Vagas — ${nomeMinisterio(ministerioSelecionado)}` : "Vagas definidas"}
+          </p>
+
+          {!cultoSelecionado ? (
+            <p className={styles.vazio}>Selecione um culto para ver as vagas.</p>
+          ) : !ministerioSelecionado ? (
+            <p className={styles.vazio}>Selecione um ministério para ver as vagas.</p>
+          ) : vagasFiltradas.length === 0 ? (
+            <p className={styles.vazio}>Nenhuma vaga definida ainda para esse ministério.</p>
+          ) : (
+            <ul className={styles.listaC}>
+              {vagasFiltradas.map((v) => (
+                <li key={v.id} className={styles.listaCulto}>
+                  <span>{v.funcao} — {v.quantidade} vaga(s)</span>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => removerVaga(v.id)}
+                    disabled={removendoId === v.id}
+                  >
+                    {removendoId === v.id ? <Spinner /> : "Remover"}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );

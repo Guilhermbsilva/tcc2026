@@ -1,6 +1,6 @@
 .header {
   position: relative;
-  width: 150px;
+  width: 200px;
   min-height: 100vh;
   color: var(--cor-primaria);
   background-color: #ffffff;
@@ -8,18 +8,7 @@
   display: flex;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
   z-index: 1;
-}
-
-.header a {
-  margin: 30px;
-  font-weight: 500;
-  transition: all 0.2s ease-in-out;
-}
-
-.header a:hover {
-  color: var(--cor-primaria);
-  opacity: 0.8;
-  transform: translateX(4px);
+  padding-bottom: 24px;
 }
 
 .logoministry {
@@ -27,4 +16,41 @@
   width: 200px;
   display: flex;
   cursor: pointer;
+  padding: 0 20px;
+}
+
+.secao {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.secaoTitulo {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+  padding: 0 20px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.header a {
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+  border-left: 3px solid transparent;
+}
+
+.header a:hover {
+  color: var(--cor-primaria);
+  opacity: 0.8;
+  background-color: #f4f4f5;
+}
+
+.ativo {
+  background-color: #eef2ff;
+  border-left: 3px solid var(--cor-primaria) !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
 }

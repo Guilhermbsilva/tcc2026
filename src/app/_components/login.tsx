@@ -24,31 +24,39 @@ export default function Login() {
     const {register, handleSubmit, formState: {errors}} = useForm<SignInSchema>({resolver: zodResolver(signInSchema),
 
     });
+async function onSubmit(data: SignInSchema) {
+  setLoginError(null);
 
-async function onSubmit(data: SignInSchema ) {
-
-    setLoginError(null);
-
-  const { data: authData, error: authError} = await supabase.auth.signInWithPassword({
+  const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
     email: data.email,
     password: data.password
-  })
-    
+  });
+
   if (authError) {
-      if (authError.message === "Invalid login credentials") {
-        setLoginError("Email ou senha incorretos");
-      } else if (authError.message === "Email not confirmed") {
-        setLoginError("Confirme seu email antes de fazer login");
-      } else {
-        setLoginError("Erro ao fazer login. Tente novamente.");
-      }
-      console.error(authError);
-      return;
+    if (authError.message === "Invalid login credentials") {
+      setLoginError("Email ou senha incorretos");
+    } else if (authError.message === "Email not confirmed") {
+      setLoginError("Confirme seu email antes de fazer login");
+    } else {
+      setLoginError("Erro ao fazer login. Tente novamente.");
     }
+    console.error(authError);
+    return;
+  }
 
+  // busca o cargo do usuário pra decidir pra onde redirecionar
+  const { data: usuario } = await supabase
+    .from("usuario")
+    .select("cargo")
+    .eq("email", data.email)
+    .single();
+
+  if (usuario?.cargo === "admin") {
+    window.location.href = "/configurar";
+  } else {
     window.location.href = "/disponibilidade";
+  }
 }
-
     return(
 
         <> <div className="imagemfundo"><img src="/IMG_7461.png" alt="" /></div>
