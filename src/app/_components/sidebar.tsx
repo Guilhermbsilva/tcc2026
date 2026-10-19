@@ -60,9 +60,8 @@ export default function Sidebar() {
 
         <div className={styles.secao}>
           <span className={styles.secaoTitulo}>Geral</span>
-          <a href="/inicio" className={ativo("/inicio") ? styles.ativo : ""}>Início</a>
+          <a href="/inicio" className={ativo("/inicio") ? styles.ativo : ""}>Tabela</a>
           <a href="/disponibilidade" className={ativo("/disponibilidade") ? styles.ativo : ""}>Disponível</a>
-          <a href="/tabela" className={ativo("/tabela") ? styles.ativo : ""}>Tabela</a>
         </div>
 
         {isAdmin && (
