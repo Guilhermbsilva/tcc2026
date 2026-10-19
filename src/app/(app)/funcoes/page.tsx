@@ -1,5 +1,5 @@
 import Funcoes from "../../_components/funcoes";
-import AuthGuard from "../../_components/auth-guard";
+import AuthGuard from "../../_components/admin";
 
 export default function Page() {
   return (
