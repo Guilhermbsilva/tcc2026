@@ -50,7 +50,9 @@ export default function WizardConfiguracao() {
 
   return (
     <>
+
       {renderizarEtapa()}
+      <div className={styles.espacador} />
 
       <div className={styles.navFlutuante}>
         <button onClick={anterior} disabled={etapaAtual === 0}>

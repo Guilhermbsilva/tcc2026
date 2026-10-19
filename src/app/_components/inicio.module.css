@@ -213,3 +213,13 @@
   color: #ffffff;
   opacity: 0.9;
 }
+
+@media (max-width: 768px) {
+  .pagina {
+    padding: 20px 16px;
+  }
+
+  .tituloPagina {
+    font-size: 22px;
+  }
+}

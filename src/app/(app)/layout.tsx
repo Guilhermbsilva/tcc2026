@@ -1,13 +1,14 @@
 import Sidebar from "../_components/sidebar";
 import AuthGuard from "../_components/admin";
+import styles from "./layout.module.css";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <AuthGuard>
-  <div style={{ display: "flex" }}>
-    <Sidebar />
-    <main style={{ flex: 1, position: "relative", minHeight: "100vh" }}>{children}</main>
-  </div>
+      <div className={styles.container}>
+        <Sidebar />
+        <main className={styles.main}>{children}</main>
+      </div>
     </AuthGuard>
   );
 }

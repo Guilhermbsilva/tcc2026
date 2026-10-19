@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+}
+
+.main {
+  flex: 1;
+  position: relative;
+  min-height: 100vh;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding-top: 56px;
+  }
+}

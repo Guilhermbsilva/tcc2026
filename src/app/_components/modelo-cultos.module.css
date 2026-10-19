@@ -128,3 +128,31 @@
   gap: 10px;
   margin-bottom: 12px;
 }
+
+@media (max-width: 768px) {
+  .pagina {
+    align-items: flex-start;
+  }
+
+  .conteudo {
+    width: 100%;
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .cardCriar,
+  .cardLista,
+  .cardCultos,
+  .cardAcao,
+  .cardResumo {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .cardLista,
+  .cardCultos,
+  .cardResumo {
+    max-height: none;
+  }
+}

@@ -131,3 +131,24 @@
   border-top: 1px solid #e5e7eb;
   background: #ffffff;
 }
+
+@media (max-width: 768px) {
+  .pagina {
+    align-items: flex-start;
+  }
+
+  .forms {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: calc(100% - 32px);
+    height: auto;
+    max-height: none;
+    margin: 16px auto;
+  }
+
+  .gridCultos {
+    grid-template-columns: 1fr;
+  }
+}

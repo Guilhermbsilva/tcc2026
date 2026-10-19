@@ -34,3 +34,33 @@
   font-weight: 600;
   white-space: nowrap;
 }
+
+.espacador {
+  height: 0;
+}
+
+@media (max-width: 768px) {
+  .navFlutuante {
+    left: 50%;
+    bottom: 12px;
+    width: calc(100% - 24px);
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .navFlutuante button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .contadorEtapa {
+    font-size: 11px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .espacador {
+    height: 80px;
+  }
+}
