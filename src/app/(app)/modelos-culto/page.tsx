@@ -2,6 +2,8 @@
 import ModelosCulto from "../../_components/modelo-cultos";
 import AuthGuard from "../../_components/admin";
 
+export const metadata = { title: "Modelos" };
+
 export default function Page() {
   return (
     <AuthGuard adminOnly>
