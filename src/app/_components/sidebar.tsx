@@ -73,7 +73,7 @@ export default function Sidebar() {
             <a href="/modelos-culto" className={ativo("/modelos-culto") ? styles.ativo : ""}>Modelos</a>
             <a href="/vagas-culto" className={ativo("/vagas-culto") ? styles.ativo : ""}>Vagas</a>
             <a href="/atribuir-ministerio" className={ativo("/atribuir-ministerio") ? styles.ativo : ""}>Atribuir</a>
-            <a href="/configurar-escala" className={ativo("/configurar") ? styles.ativo : ""}>Assistente</a>
+            <a href="/configurar" className={ativo("/configurar-escala") ? styles.ativo : ""}>Assistente</a>
           </div>
         )}
 
